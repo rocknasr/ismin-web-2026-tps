@@ -16,8 +16,16 @@ export class ModelZoo {
     this.models.set(model.id, model);
   }
 
+  clear(): void {
+    this.models.clear();
+  }
+
   getModel(id: string): Model | undefined {
     return this.models.get(id);
+  }
+
+  removeModel(id: string): boolean {
+    return this.models.delete(id);
   }
 
   getModelsOf(org: string): Model[] {
