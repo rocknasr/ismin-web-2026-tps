@@ -28,7 +28,7 @@ mdc: true
 <div class="pt-4 op-75">Séance 1: Git &amp; TypeScript</div>
 
 <div class="pt-14 text-sm op-80">
-📱 Les slides sont en ligne&nbsp;:<br/>
+📱 Les slides sont en ligne&nbsp; :<br/>
 <b class="text-base">gaetanmaisse.github.io/ismin-web-2026-tps</b>
 </div>
 

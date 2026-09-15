@@ -1,0 +1,20 @@
+meta {
+  name: 01 - List models
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/models
+  body: none
+  auth: none
+}
+
+docs {
+  Step 2: returns every model in the catalogue.
+  Expect 200 and a JSON array.
+}
+
+assert {
+  res.status: eq 200
+}

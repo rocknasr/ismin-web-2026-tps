@@ -1,0 +1,23 @@
+meta {
+  name: 04 - Filter by organisation
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/models?org=mistralai
+  body: none
+  auth: none
+}
+
+params:query {
+  org: mistralai
+}
+
+docs {
+  Step 6: filtering belongs in the service, not in the controller.
+}
+
+assert {
+  res.status: eq 200
+}

@@ -1,0 +1,33 @@
+meta {
+  name: 05 - Rejects invalid input
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/models
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id": "Not A Slug!",
+    "name": "",
+    "org": "acme",
+    "task": "time-travel",
+    "parameters": -1,
+    "downloads": 0
+  }
+}
+
+docs {
+  Step 5: every field here is invalid. Before you add the DTO decorators
+  this returns 201; afterwards it must return 400 with the list of errors.
+
+  Read the response body: that list is what your users will see.
+}
+
+assert {
+  res.status: eq 400
+}

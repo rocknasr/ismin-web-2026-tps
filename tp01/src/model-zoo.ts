@@ -1,14 +1,13 @@
-import  { Model, Task } from "./model.js";
+import { Model, Task } from "./model.js";
+import { Catalogue } from "./catalogue.js";
 
-export class ModelZoo {
-  private readonly models = new Map<string, Model>();
-
+export class ModelZoo extends Catalogue<Model> {
   addModel(model: Model): void {
-    this.models.set(model.id, model);
+    this.addItem(model);
   }
 
   getModel(id: string): Model | undefined {
-    return this.models.get(id);
+    return this.getItem(id);
   }
 
   getModelsOf(org: string): Model[] {
@@ -16,14 +15,39 @@ export class ModelZoo {
   }
 
   getAllModels(): Model[] {
-    return [...this.models.values()];
+    return this.getAllItems();
   }
 
   getTotalNumberOfModels(): number {
-    return this.models.size;
+    return this.getTotalNumberOfItems();
   }
 
   getModelsByTask(task: Task): Model[] {
     return this.getAllModels().filter((model) => model.task === task);
   }
+
+  getTotalDownloads(): number {
+    return this.getAllModels().reduce((total, model) => total + model.downloads, 0);
+  }
+
+  getModelNamesByTask(task: Task): string[] {
+    return this.getAllModels()
+      .filter((model) => model.task === task)
+      .map((model) => model.name);
+  }
+
+  getOrganisations(): string[] {
+    return [...new Set(this.getAllModels().map((model) => model.org))];
+  }
+
+  groupByTask(): Record<Task, Model[]> {
+    return this.getAllModels().reduce((groups, model) => {
+      (groups[model.task] ??= []).push(model);
+      return groups;
+    }, {} as Record<Task, Model[]>);
+  }
+}
+
+export function huggingFaceUrl(model: Model): `https://huggingface.co/${string}` {
+  return `https://huggingface.co/${model.org}/${model.id}`;
 }

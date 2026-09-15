@@ -1,0 +1,21 @@
+meta {
+  name: 03 - Get one model
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/models/mistral-7b-instruct-v0-3
+  body: none
+  auth: none
+}
+
+docs {
+  Step 3: fetch a single model by its slug.
+  Run "02 - Create a model" first.
+}
+
+assert {
+  res.status: eq 200
+  res.body.org: eq mistralai
+}

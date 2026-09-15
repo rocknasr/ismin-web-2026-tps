@@ -72,6 +72,56 @@ layout: section
 
 ---
 
+# Une requête, une réponse
+
+<div class="grid grid-cols-2 gap-6 pt-2">
+<div>
+
+```mermaid {scale: 0.7}
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'Roboto, ui-sans-serif, sans-serif','fontSize':'14px'},'sequence':{'mirrorActors':false}}}%%
+sequenceDiagram
+  participant C as 🖥️ Client
+  participant S as ⚙️ Serveur
+  C->>S: GET /datasets
+  S-->>C: 200 + JSON
+  C->>S: POST /datasets + JSON
+  S-->>C: 201
+  C->>S: GET /datasets/inconnu
+  S-->>C: 404
+```
+
+</div>
+<div>
+
+```http
+GET /datasets?org=mozilla HTTP/1.1
+Host: api.exemple.fr
+Accept: application/json
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+[{ "name": "common_voice", "org": "mozilla", … }]
+```
+
+<div class="text-sm pt-2">
+
+<v-clicks>
+
+- Le client parle en premier, le serveur ne fait que répondre
+- Une requête&nbsp;: un **verbe**, un **chemin**, des en-têtes, parfois un **corps**
+- Une réponse&nbsp;: un **code de statut**, des en-têtes, souvent un **corps**
+- Le navigateur est un client parmi d’autres&nbsp;: Bruno, `curl`, un téléphone, une autre API
+
+</v-clicks>
+
+</div>
+
+</div>
+</div>
+
+---
+
 # JSON&nbsp;: du texte, rien d’autre
 
 Le format d’échange du web.
@@ -188,12 +238,12 @@ layout: section
 <div>
 
 ```sh
-npm init            # crée package.json
-npm install         # installe tout
-npm install axios   # ajoute une dépendance
-npm install -D jest # ajoute une dépendance de dev
+npm init              # crée package.json
+npm install           # installe tout
+npm install axios     # ajoute une dépendance
+npm install -D vitest # ajoute une dépendance de dev
 
-npm run start       # lance un script
+npm run start         # lance un script
 npm run test
 ```
 
@@ -222,32 +272,32 @@ npm run test
 
 # `package.json`&nbsp;: la carte d’identité du projet
 
-```json {2-4|6-11|13-20|all}
+```json {2-5|6-11|12-19|all}
 {
   "name": "tp02-modelzoo-api",
   "private": true,
+  "type": "module",
   "engines": { "node": ">=26.0.0 <27.0.0" },
-
   "scripts": {
     "start:dev": "nest start --watch",
     "build": "nest build",
-    "test": "jest --config ./test/jest-e2e.json",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
-
   "dependencies": {
-    "@nestjs/common": "^11.0.1",
+    "@nestjs/common": "^12.0.1",
     "class-validator": "^0.14.1"
   },
   "devDependencies": {
-    "typescript": "^5.7.3",
-    "jest": "^29.7.0"
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
   }
 }
 ```
 
 <div class="pt-2 text-sm op-75">
-Les <b>scripts</b> sont des raccourcis&nbsp;: plutôt que de retenir une commande longue, on tape <code>npm run test</code>.
+Les <b>scripts</b> sont des raccourcis&nbsp;: on tape <code>npm run test</code>, pas la commande longue.
+<code>"type": "module"</code>&nbsp;: des modules ES, comme hier, d’où les imports en <code>.js</code>.
 </div>
 
 ---
@@ -363,6 +413,7 @@ tp02/
 ├── package.json
 ├── nest-cli.json
 ├── tsconfig.json
+├── vitest.config.ts
 ├── src
 │   ├── main.ts
 │   ├── app.module.ts
@@ -605,7 +656,7 @@ Ce qu’on n’y met <b>jamais</b>&nbsp;: tout ce qui parle HTTP. Un service ne 
 
 ```ts {4-5|6|8-11|13-15|all}
 import { Injectable } from '@nestjs/common';
-import { DatasetCatalog } from './dataset-catalog';
+import { DatasetCatalog } from './dataset-catalog.js';
 
 @Injectable()                       // ← « Nest peut fournir cette classe »
 export class DatasetsService {
@@ -691,27 +742,30 @@ Un objet retourné devient du <b>JSON automatiquement</b>, avec un <code>200</co
 
 # ③ Un contrôleur, plusieurs routes
 
-```ts {1-7|9-14|all}
+```ts {5-9|11-16|all}
 @Controller('datasets')
 export class DatasetsController {
-  @Get()          findAll()  { … }    // GET    /datasets
-  @Post()         create()   { … }    // POST   /datasets   ← même chemin
-  @Get(':id')     findOne()  { … }    // GET    /datasets/:id
-  @Delete(':id')  remove()   { … }    // DELETE /datasets/:id  ← même chemin
-}
+  constructor(private readonly datasetsService: DatasetsService) {}
 
-// Récupérer le paramètre d'URL
-findOne(@Param('id') id: string): Dataset {
-  const model = this.datasetsService.findOne(id);
-  // model peut être undefined : à vous de renvoyer un 404 (README, étape 3)
-  …
+  @Get()                                   // GET  /datasets
+  findAll(): Dataset[] { … }
+
+  @Post()                                  // POST /datasets, même chemin, autre verbe
+  create(@Body() dataset: Dataset): Dataset { … }
+x
+  @Get(':id')                              // GET  /datasets/:id
+  findOne(@Param('id') id: string): Dataset {
+    const dataset = this.datasetsService.findOne(id);
+    if (!dataset) throw new NotFoundException();   // Nest en fait un 404
+    return dataset;
+  }
 }
 ```
 
 <v-clicks>
 
-- C’est le couple **(verbe, chemin)** qui détermine la méthode appelée, pas le chemin seul
-- `NotFoundException` devient un **404**, `BadRequestException` un **400**&nbsp;: Nest traduit vos exceptions en réponses HTTP
+- C’est le couple **(verbe, chemin)** qui choisit la méthode, pas le chemin seul
+- Nest traduit l’exception en réponse&nbsp;: `NotFoundException` → **404**, `BadRequestException` → **400**
 
 </v-clicks>
 
@@ -851,13 +905,13 @@ flowchart LR
 
 ```ts
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule } from './app.module.js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);   // le module racine
   await app.listen(process.env.PORT ?? 3000);        // le port d'écoute
 }
-void bootstrap();                                    // void : on lance, sans attendre
+await bootstrap();                                   // await hors fonction : permis à la racine d'un module ES
 ```
 
 <div class="pt-3 text-sm op-75">
@@ -1099,7 +1153,7 @@ async function loadDatasets(): Promise<Dataset[]> {
   return JSON.parse(raw);        // un fichier à nous : on lui fait confiance
 }
 
-// await ne s'utilise QUE dans une fonction async
+// await : dans une fonction async, ou à la racine d'un module ES
 async function main() {
   const datasets = await loadDatasets();              // ✅
 
@@ -1427,7 +1481,8 @@ Exceptions prêtes à l’emploi&nbsp;: <code>NotFoundException</code> (404), <c
 ```
 
 <div class="pt-6 text-sm op-75">
-Tous viennent de <code>class-validator</code>. La liste complète&nbsp;: <b>github.com/typestack/class-validator</b>
+Tous viennent de <code>class-validator</code>. La liste complète&nbsp;: <b>github.com/typestack/class-validator</b><br/>
+Depuis Nest 12, l’alternative sans décorateurs&nbsp;: un schéma Zod ou Valibot passé à <code>@Body({ schema })</code>, validé par <code>StandardSchemaValidationPipe</code>. Le cours reste sur class-validator, le défaut documenté.
 </div>
 
 ---

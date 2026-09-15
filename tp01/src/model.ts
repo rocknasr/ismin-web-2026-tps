@@ -9,7 +9,7 @@ export interface Model {
   name: string;
   org: string;
   task: Task;
-  parameters: number; // in billions, as on the Hugging Face model card
-  downloads: number; // over the last month
+  parameters: number; 
+  downloads: number; 
   license?: string;
 }
