@@ -72,7 +72,7 @@ layout: section
 
 ---
 
-# Une requête, une réponse
+# Une request, une response
 
 <div class="grid grid-cols-2 gap-6 pt-2">
 <div>
@@ -109,8 +109,8 @@ Content-Type: application/json
 <v-clicks>
 
 - Le client parle en premier, le serveur ne fait que répondre
-- Une requête&nbsp;: un **verbe**, un **chemin**, des en-têtes, parfois un **corps**
-- Une réponse&nbsp;: un **code de statut**, des en-têtes, souvent un **corps**
+- Une request&nbsp;: un **verbe**, un **path**, des headers, parfois un **body**
+- Une response&nbsp;: un **status code**, des headers, souvent un **body**
 - Le navigateur est un client parmi d’autres&nbsp;: Bruno, `curl`, un téléphone, une autre API
 
 </v-clicks>
@@ -138,7 +138,7 @@ Le format d’échange du web.
 
 <v-clicks>
 
-- Types disponibles&nbsp;: chaîne, nombre, booléen, `null`, tableau, objet. **C’est tout.**
+- Types disponibles&nbsp;: string, number, boolean, `null`, array, object. **C’est tout.**
 - Pas de date, pas de commentaire, pas de `undefined`
 - En JavaScript&nbsp;: `JSON.parse(texte)` pour lire, `JSON.stringify(objet)` pour écrire
 
@@ -160,11 +160,11 @@ Des **noms au pluriel**, manipulés par des **verbes** HTTP.
 
 <div class="pt-2">
 
-| Verbe | Chemin | Effet |
+| Verbe | Path | Effet |
 |---|---|---|
 | `GET` | `/datasets` | Lister les datasets |
 | `GET` | `/datasets/:id` | Lire un dataset |
-| `POST` | `/datasets` | Créer un dataset, à partir du corps |
+| `POST` | `/datasets` | Créer un dataset, à partir du body |
 | `PUT` / `PATCH` | `/datasets/:id` | Remplacer / modifier |
 | `DELETE` | `/datasets/:id` | Supprimer |
 
@@ -173,7 +173,7 @@ Des **noms au pluriel**, manipulés par des **verbes** HTTP.
 <v-click>
 
 <div class="pt-4 text-sm op-75">
-On filtre avec des paramètres de requête&nbsp;: <code>GET /datasets<b>?org=mozilla&licence=cc0-1.0</b></code><br/>
+On filtre avec des query parameters&nbsp;: <code>GET /datasets<b>?org=mozilla&licence=cc0-1.0</b></code><br/>
 Jamais de verbe dans l’URL&nbsp;: <code>/getDatasets</code> ou <code>/datasets/delete</code> ne sont pas du REST.
 </div>
 
@@ -198,7 +198,7 @@ Jamais de verbe dans l’URL&nbsp;: <code>/getDatasets</code> ou <code>/datasets
 
 | | |
 |---|---|
-| `400` | Requête invalide |
+| `400` | Request invalide |
 | `401` | Pas authentifié |
 | `403` | Authentifié mais pas autorisé |
 | `404` | Introuvable |
@@ -232,7 +232,7 @@ layout: section
 
 ---
 
-# npm&nbsp;: le gestionnaire de paquets
+# npm&nbsp;: le package manager
 
 <div class="grid grid-cols-2 gap-6 pt-2">
 <div>
@@ -263,7 +263,7 @@ npm run test
 
 <v-clicks>
 
-- `node_modules/` contient les paquets téléchargés. **Il ne se commite jamais**&nbsp;: il se reconstruit avec `npm install`.
+- `node_modules/` contient les packages téléchargés. **Il ne se commite jamais**&nbsp;: il se reconstruit avec `npm install`.
 - `package-lock.json`, lui, **se commite**&nbsp;: il fige les versions exactes, pour que votre machine et le serveur installent exactement la même chose.
 
 </v-clicks>
@@ -309,11 +309,12 @@ layout: center
 <div class="pt-4 text-left max-w-3xl mx-auto">
 
 ```sh
-# Une seule fois : déclarer le dépôt du cours comme source des TP
+# Une seule fois : déclarer le repo du cours comme source des TP
 git remote add upstream https://github.com/gaetanmaisse/ismin-web-2026-tps.git
+git config --global pull.rebase false      # un pull fait un merge, sans réécrire vos commits
 
 # À chaque séance : récupérer le TP du jour
-git pull upstream main
+git pull --no-edit upstream main           # --no-edit : pas d'éditeur pour le message de merge
 
 cd tp02 && npm install
 npm run start:dev
@@ -388,7 +389,7 @@ export class DatasetsController {
 
 <v-clicks>
 
-- Nest s’appuie sur **Express** et lui ajoute&nbsp;: structure, injection de dépendances, validation, gestion des erreurs
+- Nest s’appuie sur **Express** et lui ajoute&nbsp;: structure, dependency injection, validation, gestion des erreurs
 - Vous écrivez **la logique métier**, pas la plomberie
 
 </v-clicks>
@@ -435,7 +436,7 @@ tp02/
 
 <v-clicks>
 
-- **`src/main.ts`**&nbsp;: le point d’entrée, qui démarre le serveur
+- **`src/main.ts`**&nbsp;: l’entry point, qui démarre le serveur
 - **`*.module.ts`**&nbsp;: les boîtes qui déclarent ce qui va ensemble
 - **`*.controller.ts`**&nbsp;: les routes HTTP
 - **`*.service.ts`**&nbsp;: la logique métier
@@ -465,7 +466,7 @@ Une convention forte&nbsp;: <b>un fichier = une responsabilité</b>, et le nom d
 %%{init: {'theme':'base','themeVariables':{'fontFamily':'ui-sans-serif, -apple-system, Segoe UI, sans-serif','fontSize':'16px','lineColor':'#94a3b8','primaryTextColor':'#0f172a','clusterBkg':'#f8fafc','clusterBorder':'#cbd5e1'}}}%%
 flowchart LR
   MA["🚀 main.ts<br/>bootstrap"] -.->|"NestFactory.create"| M
-  R["📨 Requête HTTP<br/>POST /datasets"] --> C
+  R["📨 Request HTTP<br/>POST /datasets"] --> C
   subgraph M["📦 datasets.module.ts"]
     direction LR
     C["🎯 Controller<br/>@Controller"] --> S["⚙️ Service<br/>@Injectable"]
@@ -494,7 +495,7 @@ flowchart LR
 
 ---
 
-# Les décorateurs&nbsp;: la syntaxe à connaître
+# Les decorators&nbsp;: la syntaxe à connaître
 
 Tout ce qui suit est parsemé de `@`. C’est une **annotation** qui attache des métadonnées à une classe, une méthode ou un paramètre.
 
@@ -503,7 +504,7 @@ Tout ce qui suit est parsemé de `@`. C’est une **annotation** qui attache des
 @Get(':id')             // cette méthode répond à GET /datasets/:id
 @Param('id')            // injecte ici le segment :id de l'URL
 @Query('org')           // injecte ici le paramètre ?org=
-@Body()                 // injecte ici le corps JSON de la requête
+@Body()                 // injecte ici le body JSON de la request
 ```
 
 <v-click>
@@ -536,7 +537,7 @@ class: text-center
 %%{init: {'theme':'base','themeVariables':{'fontFamily':'ui-sans-serif, -apple-system, Segoe UI, sans-serif','fontSize':'16px','lineColor':'#94a3b8','primaryTextColor':'#0f172a','clusterBkg':'#f8fafc','clusterBorder':'#cbd5e1'}}}%%
 flowchart LR
   MA["🚀 main.ts<br/>bootstrap"] -.->|"NestFactory.create"| M
-  R["📨 Requête HTTP<br/>POST /datasets"] --> C
+  R["📨 Request HTTP<br/>POST /datasets"] --> C
   subgraph M["📦 datasets.module.ts"]
     direction LR
     C["🎯 Controller<br/>@Controller"] --> S["⚙️ Service<br/>@Injectable"]
@@ -598,7 +599,7 @@ class: text-center
 %%{init: {'theme':'base','themeVariables':{'fontFamily':'ui-sans-serif, -apple-system, Segoe UI, sans-serif','fontSize':'16px','lineColor':'#94a3b8','primaryTextColor':'#0f172a','clusterBkg':'#f8fafc','clusterBorder':'#cbd5e1'}}}%%
 flowchart LR
   MA["🚀 main.ts<br/>bootstrap"] -.->|"NestFactory.create"| M
-  R["📨 Requête HTTP<br/>POST /datasets"] --> C
+  R["📨 Request HTTP<br/>POST /datasets"] --> C
   subgraph M["📦 datasets.module.ts"]
     direction LR
     C["🎯 Controller<br/>@Controller"] --> S["⚙️ Service<br/>@Injectable"]
@@ -645,7 +646,7 @@ flowchart LR
 <v-click>
 
 <div class="pt-3 p-3 bg-blue-500 bg-opacity-10 rounded text-sm">
-Ce qu’on n’y met <b>jamais</b>&nbsp;: tout ce qui parle HTTP. Un service ne connaît ni requête, ni code de statut. Il doit être testable sans serveur.
+Ce qu’on n’y met <b>jamais</b>&nbsp;: tout ce qui parle HTTP. Un service ne connaît ni request, ni status code. Il doit être testable sans serveur.
 </div>
 
 </v-click>
@@ -688,7 +689,7 @@ class: text-center
 %%{init: {'theme':'base','themeVariables':{'fontFamily':'ui-sans-serif, -apple-system, Segoe UI, sans-serif','fontSize':'16px','lineColor':'#94a3b8','primaryTextColor':'#0f172a','clusterBkg':'#f8fafc','clusterBorder':'#cbd5e1'}}}%%
 flowchart LR
   MA["🚀 main.ts<br/>bootstrap"] -.->|"NestFactory.create"| M
-  R["📨 Requête HTTP<br/>POST /datasets"] --> C
+  R["📨 Request HTTP<br/>POST /datasets"] --> C
   subgraph M["📦 datasets.module.ts"]
     direction LR
     C["🎯 Controller<br/>@Controller"] --> S["⚙️ Service<br/>@Injectable"]
@@ -716,11 +717,11 @@ flowchart LR
 
 </div>
 
-<div class="pt-2 text-2xl font-bold">③ Le contrôleur</div>
+<div class="pt-2 text-2xl font-bold">③ Le controller</div>
 
 ---
 
-# ③ Le contrôleur&nbsp;: traduire HTTP ↔ métier
+# ③ Le controller&nbsp;: traduire HTTP ↔ métier
 
 ```ts {1-3|5-8|all}
 @Controller('datasets')           // toutes les routes commencent par /datasets
@@ -740,7 +741,7 @@ Un objet retourné devient du <b>JSON automatiquement</b>, avec un <code>200</co
 
 ---
 
-# ③ Un contrôleur, plusieurs routes
+# ③ Un controller, plusieurs routes
 
 ```ts {5-9|11-16|all}
 @Controller('datasets')
@@ -750,7 +751,7 @@ export class DatasetsController {
   @Get()                                   // GET  /datasets
   findAll(): Dataset[] { … }
 
-  @Post()                                  // POST /datasets, même chemin, autre verbe
+  @Post()                                  // POST /datasets, même path, autre verbe
   create(@Body() dataset: Dataset): Dataset { … }
 x
   @Get(':id')                              // GET  /datasets/:id
@@ -764,8 +765,8 @@ x
 
 <v-clicks>
 
-- C’est le couple **(verbe, chemin)** qui choisit la méthode, pas le chemin seul
-- Nest traduit l’exception en réponse&nbsp;: `NotFoundException` → **404**, `BadRequestException` → **400**
+- C’est le couple **(verbe, path)** qui choisit la méthode, pas le path seul
+- Nest traduit l’exception en response&nbsp;: `NotFoundException` → **404**, `BadRequestException` → **400**
 
 </v-clicks>
 
@@ -782,10 +783,10 @@ export class DatasetsController {
 
 <v-clicks>
 
-- C’est l’injection de dépendances&nbsp;: vous **déclarez** ce dont vous avez besoin, Nest vous le **fournit**
-- Fonctionne pour les contrôleurs **et** pour les services entre eux
+- C’est la dependency injection&nbsp;: vous **déclarez** ce dont vous avez besoin, Nest vous le **fournit**
+- Fonctionne pour les controllers **et** pour les services entre eux
 - Une seule instance de `DatasetsService` est partagée par toute l’application
-- En test, on peut fournir un faux service à la place, sans changer une ligne du contrôleur
+- En test, on peut fournir un faux service à la place, sans changer une ligne du controller
 
 </v-clicks>
 
@@ -808,7 +809,7 @@ class: text-center
 %%{init: {'theme':'base','themeVariables':{'fontFamily':'ui-sans-serif, -apple-system, Segoe UI, sans-serif','fontSize':'16px','lineColor':'#94a3b8','primaryTextColor':'#0f172a','clusterBkg':'#f8fafc','clusterBorder':'#cbd5e1'}}}%%
 flowchart LR
   MA["🚀 main.ts<br/>bootstrap"] -.->|"NestFactory.create"| M
-  R["📨 Requête HTTP<br/>POST /datasets"] --> C
+  R["📨 Request HTTP<br/>POST /datasets"] --> C
   subgraph M["📦 datasets.module.ts"]
     direction LR
     C["🎯 Controller<br/>@Controller"] --> S["⚙️ Service<br/>@Injectable"]
@@ -848,14 +849,14 @@ import { Module } from '@nestjs/common';
 
 @Module({
   controllers: [DatasetsController],   // les routes de ce module
-  providers: [DatasetsService],        // ses fournisseurs (providers), les classes injectables
+  providers: [DatasetsService],        // ses providers, les classes injectables
   exports: [DatasetsService],          // ce que d'autres modules peuvent réutiliser
 })
-export class DatasetsModule {}         // classe vide : tout est dans le décorateur
+export class DatasetsModule {}         // classe vide : tout est dans le decorator
 ```
 
 <div class="pt-3 p-3 bg-amber-500 bg-opacity-10 rounded text-sm">
-⚠️ <b>Le piège nº 1 du TP</b>&nbsp;: un contrôleur oublié dans <code>controllers</code> ne sera <b>jamais</b> appelé. Vos routes répondront 404 sans le moindre message d’erreur. Si une route reste introuvable, vérifiez le module avant tout le reste.
+⚠️ <b>Le piège nº 1 du TP</b>&nbsp;: un controller oublié dans <code>controllers</code> ne sera <b>jamais</b> appelé. Vos routes répondront 404 sans le moindre message d’erreur. Si une route reste introuvable, vérifiez le module avant tout le reste.
 </div>
 
 ---
@@ -869,7 +870,7 @@ class: text-center
 %%{init: {'theme':'base','themeVariables':{'fontFamily':'ui-sans-serif, -apple-system, Segoe UI, sans-serif','fontSize':'16px','lineColor':'#94a3b8','primaryTextColor':'#0f172a','clusterBkg':'#f8fafc','clusterBorder':'#cbd5e1'}}}%%
 flowchart LR
   MA["🚀 main.ts<br/>bootstrap"] -.->|"NestFactory.create"| M
-  R["📨 Requête HTTP<br/>POST /datasets"] --> C
+  R["📨 Request HTTP<br/>POST /datasets"] --> C
   subgraph M["📦 datasets.module.ts"]
     direction LR
     C["🎯 Controller<br/>@Controller"] --> S["⚙️ Service<br/>@Injectable"]
@@ -953,9 +954,9 @@ Vous verrez vos erreurs apparaître sans jamais avoir à relancer quoi que ce so
 
 Un client HTTP libre, hors ligne, sans compte.
 
-- Composer des requêtes `GET`, `POST`, `DELETE`
-- Modifier en-têtes, corps, paramètres
-- Regrouper les requêtes en **collections**
+- Composer des requests `GET`, `POST`, `DELETE`
+- Modifier headers, body, paramètres
+- Regrouper les requests en **collections**
 - Définir des **environnements** (local, production)
 
 </div>
@@ -991,243 +992,7 @@ Alternative sans rien installer&nbsp;: l’extension <b>REST Client</b> de VS Co
 layout: section
 ---
 
-# TP · partie 1
-
-<div class="op-75 pt-2"><code>tp02/README.md</code>, étapes 0 à 3</div>
-
-<div class="pt-8 text-sm inline-block text-left">
-
-0. Copier votre `ModelZoo` du TP1 dans `src/models/`, ou garder le corrigé fourni
-1. Lire le projet, puis câbler le module&nbsp;: il est livré vide
-2. `GET /models`
-3. `GET /models/:id`, avec un 404 si le modèle est inconnu
-
-</div>
-
-<div class="pt-8 text-sm op-75">
-🖐 Bloqué&nbsp;? Levez la main.
-</div>
-
----
-layout: section
----
-
-# 4. L’asynchronisme
-
-<div class="op-75 pt-2">Attendre sans bloquer</div>
-
----
-
-# Un service qui devient asynchrone
-
-<div class="grid grid-cols-2 gap-4 pt-2">
-<div>
-
-**Aujourd’hui&nbsp;: tout en mémoire**
-
-```ts
-export class DatasetsService {
-  create(dataset: Dataset): Dataset {
-    …
-  }
-
-  findAll(): Dataset[] {
-    …
-  }
-
-  findOne(id: string): Dataset | undefined {
-    …
-  }
-}
-```
-
-</div>
-<div>
-
-**Demain, avec une base de données**
-
-```ts
-export class DatasetsService {
-  create(dataset: Dataset): Promise<Dataset> {
-    …
-  }
-
-  findAll(): Promise<Dataset[]> {
-    …
-  }
-
-  findOne(id: string): Promise<Dataset | null> {
-    …
-  }
-}
-```
-
-</div>
-</div>
-
-<v-click>
-
-<div class="pt-6">
-
-Dès qu’une seule opération devient asynchrone, **tout ce qui l’appelle le devient aussi**. C’est contagieux, et ça remonte jusqu’au contrôleur.
-
-D’où la question suivante&nbsp;: c’est quoi, au juste, une opération asynchrone&nbsp;?
-
-</div>
-
-</v-click>
-
----
-
-# Node exécute votre code sur un seul thread
-
-<div class="text-sm op-75 mb-4">
-Pas de <code>pthread_create</code> ici. Une seule file d’exécution, donc <b>on ne bloque jamais</b>.
-</div>
-
-<v-clicks>
-
-- Lire un fichier, appeler une API, interroger une base&nbsp;: tout cela **prend du temps**
-- Pendant ce temps, le thread doit rester libre pour traiter les autres requêtes
-- Donc&nbsp;: on ne dit pas « attends le résultat », on dit **« préviens-moi quand tu l’as »**
-
-</v-clicks>
-
-<v-click>
-
-<div class="pt-8 p-4 bg-blue-500 bg-opacity-10 rounded">
-Conséquence directe&nbsp;: une fonction qui fait des entrées/sorties ne renvoie pas un résultat, elle renvoie une <b>promesse</b> de résultat.
-</div>
-
-</v-click>
-
----
-
-# Trois façons d’écrire la même chose
-
-````md magic-move
-```ts
-// ① Callbacks : l'enfer de l'imbrication
-readFile('datasets.json', (err, data) => {
-  if (err) return handle(err);
-  parse(data, (err, datasets) => {
-    if (err) return handle(err);
-    save(datasets, (err) => {
-      if (err) return handle(err);
-      console.log('done');
-    });
-  });
-});
-```
-
-```ts
-// ② Promises : on aplatit
-readFile('datasets.json')
-  .then((data) => parse(data))
-  .then((datasets) => save(datasets))
-  .then(() => console.log('done'))
-  .catch(handle);
-```
-
-```ts
-// ③ async/await : on lit comme du synchrone
-try {
-  const data = await readFile('datasets.json');
-  const datasets = await parse(data);
-  await save(datasets);
-  console.log('done');
-} catch (err) {
-  handle(err);
-}
-```
-````
-
----
-
-# `async` / `await` en pratique
-
-```ts {1-5|7-9,18-20|11-15|all}
-// async devant une fonction : elle renvoie TOUJOURS une Promise
-async function loadDatasets(): Promise<Dataset[]> {
-  const raw = await readFile('datasets.json', 'utf8');
-  return JSON.parse(raw);        // un fichier à nous : on lui fait confiance
-}
-
-// await : dans une fonction async, ou à la racine d'un module ES
-async function main() {
-  const datasets = await loadDatasets();              // ✅
-
-  // Plusieurs appels en parallèle : Promise.all
-  const [locaux, distants] = await Promise.all([
-    loadDatasets(),
-    fetchFromHuggingFace(),
-  ]);
-}
-
-function nope() {
-  const datasets = await loadDatasets();              // ❌ erreur de compilation
-}
-```
-
-<div class="pt-2 text-sm op-75">
-<code>Promise.all</code> lance tout en même temps et attend le dernier. En série, ce serait deux fois plus lent.
-</div>
-
----
-
-# À vous&nbsp;: dans quel ordre&nbsp;?
-
-```ts {monaco-run}
-async function getDataset(): Promise<string> {
-  return 'common_voice';
-}
-
-console.log('avant');
-getDataset().then((name) => console.log(name));
-console.log('après');
-```
-
----
-layout: section
----
-
-# 5. Le cycle de vie
-
----
-
-# Nest vous prévient aux moments clés
-
-```mermaid {scale: 0.62}
-flowchart LR
-  A["Modules<br/>instanciés"] --> B["onModuleInit"]
-  B --> C["onApplicationBootstrap"]
-  C --> D["🟢 L'app écoute"]
-  D --> E["onModuleDestroy"]
-  E --> F["onApplicationShutdown"]
-```
-
-```ts {1|3-10|all}
-import { Injectable, OnModuleInit } from '@nestjs/common';
-
-@Injectable()
-// implements : « je fournis cette méthode », et Nest l'appelle au bon moment
-export class DatasetsService implements OnModuleInit {
-  async onModuleInit(): Promise<void> {
-    // le bon moment pour charger des données, ouvrir une connexion…
-    await this.loadCatalogue();
-  }
-}
-```
-
-<div class="pt-3 text-sm op-75">
-Pourquoi pas dans le constructeur&nbsp;? Parce qu’un constructeur ne peut pas être <code>async</code>. <code>onModuleInit</code>, si, et Nest l’attend avant de démarrer le serveur.
-</div>
-
----
-layout: section
----
-
-# 6. Valider ce qui vient de l’extérieur
+# 4. Valider ce qui vient de l’extérieur
 
 <div class="op-75 pt-2">Parce qu’un type n’impose rien</div>
 
@@ -1242,7 +1007,7 @@ class: text-center
 %%{init: {'theme':'base','themeVariables':{'fontFamily':'ui-sans-serif, -apple-system, Segoe UI, sans-serif','fontSize':'16px','lineColor':'#94a3b8','primaryTextColor':'#0f172a','clusterBkg':'#f8fafc','clusterBorder':'#cbd5e1'}}}%%
 flowchart LR
   MA["🚀 main.ts<br/>bootstrap"] -.->|"NestFactory.create"| M
-  R["📨 Requête HTTP<br/>POST /datasets"] --> C
+  R["📨 Request HTTP<br/>POST /datasets"] --> C
   subgraph M["📦 datasets.module.ts"]
     direction LR
     C["🎯 Controller<br/>@Controller"] --> S["⚙️ Service<br/>@Injectable"]
@@ -1339,7 +1104,7 @@ app.useGlobalPipes(
 
 <div class="pt-3 text-sm op-75">
 Une entrée invalide ne parvient jamais à votre service&nbsp;: Nest répond <b>400</b> avec le détail des erreurs.<br/>
-<code>whitelist</code> retire les champs non déclarés, <code>forbidNonWhitelisted</code> va plus loin et refuse la requête&nbsp;: un client ne peut pas glisser de propriété surprise.
+<code>whitelist</code> retire les champs non déclarés, <code>forbidNonWhitelisted</code> va plus loin et refuse la request&nbsp;: un client ne peut pas glisser de propriété surprise.
 </div>
 
 </v-click>
@@ -1348,20 +1113,24 @@ Une entrée invalide ne parvient jamais à votre service&nbsp;: Nest répond <b>
 layout: section
 ---
 
-# TP · partie 2
+# TP
 
-<div class="op-75 pt-2"><code>tp02/README.md</code>, étapes 4 à 6</div>
+<div class="op-75 pt-2"><code>tp02/README.md</code>, étapes 0 à 6</div>
 
 <div class="pt-8 text-sm inline-block text-left">
 
+0. Copier votre `ModelZoo` du TP1 dans `src/models/`, ou garder le corrigé fourni
+1. Lire le projet, puis câbler le module&nbsp;: il est livré vide
+2. `GET /models`
+3. `GET /models/:id`, avec un 404 si le modèle est inconnu
 4. `POST /models` et `DELETE /models/:id`
 5. Valider les entrées avec un DTO
 6. Filtrer avec `?org=` et `?task=`
 
 </div>
 
-<div class="pt-6 text-sm op-75">
-Bonus&nbsp;: charger le catalogue au démarrage (<code>OnModuleInit</code>), puis depuis l’API de Hugging Face
+<div class="pt-8 text-sm op-75">
+🖐 Bloqué&nbsp;? Levez la main.
 </div>
 
 ---
@@ -1371,7 +1140,7 @@ Bonus&nbsp;: charger le catalogue au démarrage (<code>OnModuleInit</code>), pui
 <div class="grid grid-cols-2 gap-6 pt-4">
 <div>
 
-### ❌ Logique dans le contrôleur
+### ❌ Logique dans le controller
 
 ```ts
 @Get()
@@ -1384,7 +1153,7 @@ findAll(@Query('org') org?: string) {
 }
 ```
 
-Le contrôleur fait du métier.
+Le controller fait du métier.
 
 </div>
 <div>
@@ -1398,7 +1167,7 @@ findAll(@Query('org') org?: string) {
 }
 ```
 
-Le contrôleur traduit, le service décide.
+Le controller traduit, le service décide.
 
 </div>
 </div>
@@ -1407,7 +1176,7 @@ Le contrôleur traduit, le service décide.
 
 <div class="pt-8">
 
-**Pourquoi ça compte&nbsp;:** demain, le service passe sur une base de données. Si le filtrage est dans le contrôleur, il faudra le réécrire, et il ne profitera jamais d’un index.
+**Pourquoi ça compte&nbsp;:** demain, le service passe sur une base de données. Si le filtrage est dans le controller, il faudra le réécrire, et il ne profitera jamais d’un index.
 
 </div>
 
@@ -1428,7 +1197,7 @@ Redémarrez votre API maintenant&nbsp;: <b>tout a disparu.</b>
 
 <div class="pt-6">
 Demain, les données survivent&nbsp;: une vraie base, des migrations,<br/>
-et un client typé de bout en bout.
+et un client typé de bout en bout. Et d’abord, l’asynchrone&nbsp;: votre service va devoir <b>attendre</b> la base.
 </div>
 
 <div class="pt-10 text-sm op-60">
@@ -1445,20 +1214,20 @@ layout: section
 
 ---
 
-# Annexe · Décorateurs NestJS courants
+# Annexe · Decorators NestJS courants
 
 <div class="text-sm">
 
-| Décorateur | Rôle | Exemple |
+| Decorator | Rôle | Exemple |
 |---|---|---|
 | `@Controller('datasets')` | Préfixe de routes | `/datasets` |
 | `@Get()` `@Post()` `@Delete()` | Verbe HTTP | `@Get(':id')` |
 | `@Param('id')` | Segment d’URL | `/datasets/common_voice` |
-| `@Query('org')` | Paramètre de requête | `/datasets?org=mozilla` |
-| `@Body()` | Corps JSON de la requête | `POST` avec un DTO |
-| `@HttpCode(204)` | Forcer le code de statut | après un `DELETE` |
-| `@Injectable()` | Fournisseur, construit et injecté par Nest | sur les services |
-| `@Module({...})` | Déclare les contrôleurs et les fournisseurs | |
+| `@Query('org')` | Query parameter | `/datasets?org=mozilla` |
+| `@Body()` | Body JSON de la request | `POST` avec un DTO |
+| `@HttpCode(204)` | Forcer le status code | après un `DELETE` |
+| `@Injectable()` | Provider, construit et injecté par Nest | sur les services |
+| `@Module({...})` | Déclare les controllers et les providers | |
 
 </div>
 
@@ -1468,11 +1237,11 @@ Exceptions prêtes à l’emploi&nbsp;: <code>NotFoundException</code> (404), <c
 
 ---
 
-# Annexe · Décorateurs de validation
+# Annexe · Decorators de validation
 
 ```ts
 @IsString()  @IsNumber()  @IsBoolean()  @IsInt()
-@IsNotEmpty()                    // chaîne non vide
+@IsNotEmpty()                    // string non vide
 @IsOptional()                    // le champ peut être absent
 @Min(0)  @Max(100)               // bornes numériques
 @IsIn(['cc0-1.0', 'odc-by'])              // valeurs autorisées
@@ -1482,7 +1251,7 @@ Exceptions prêtes à l’emploi&nbsp;: <code>NotFoundException</code> (404), <c
 
 <div class="pt-6 text-sm op-75">
 Tous viennent de <code>class-validator</code>. La liste complète&nbsp;: <b>github.com/typestack/class-validator</b><br/>
-Depuis Nest 12, l’alternative sans décorateurs&nbsp;: un schéma Zod ou Valibot passé à <code>@Body({ schema })</code>, validé par <code>StandardSchemaValidationPipe</code>. Le cours reste sur class-validator, le défaut documenté.
+Depuis Nest 12, l’alternative sans decorators&nbsp;: un schema Zod ou Valibot passé à <code>@Body({ schema })</code>, validé par <code>StandardSchemaValidationPipe</code>. Le cours reste sur class-validator, le défaut documenté.
 </div>
 
 ---

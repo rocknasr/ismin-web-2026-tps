@@ -19,7 +19,8 @@ The spec is `test/models.e2e-spec.ts`. Do not modify it: make it pass.
 
 ```sh
 git remote add upstream https://github.com/gaetanmaisse/ismin-web-2026-tps.git   # once
-git pull upstream main                                                            # every session
+git config --global pull.rebase false                                             # once: a pull merges
+git pull --no-edit upstream main                                                  # every session
 
 cd tp02 && npm install
 npm run start:dev      # the server, http://localhost:3000
@@ -66,7 +67,7 @@ One rule: the controller translates HTTP, the service decides. No business logic
 
 ## 🛰 Extra
 
-- **A. Load `data/models.json` on startup**, three times: `readFile` with a callback, then its promise version, then `async/await`. Look up `OnModuleInit`.
+- **A. Load `data/models.json` on startup**, with `readFile` from `node:fs/promises` and `async`/`await`. Look up `OnModuleInit`.
 - **B. Real data.** Replace the file with `https://huggingface.co/api/models?limit=50&sort=downloads`. Field names differ, and the file stays your fallback when the API is down.
 
 ## 🤖 AI

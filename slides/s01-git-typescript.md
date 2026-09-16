@@ -200,7 +200,7 @@ On règle ça pendant que je parle du programme, pas à 15 h quand il faudra cod
 <v-click>
 
 <div class="mt-4 p-4 rounded border-l-4 border-blue-500 bg-blue-500 bg-opacity-5">
-<b>À 16 h 30 aujourd’hui</b>, vous aurez un dépôt Git à votre nom avec une branche poussée,
+<b>À 16 h 30 aujourd’hui</b>, vous aurez un repo Git à votre nom avec une branch pushée,
 et une classe TypeScript qui fait passer onze tests.
 </div>
 
@@ -331,7 +331,7 @@ layout: section
 
 <div class="pt-2">
 
-Vous ne poussez pas sur mon dépôt&nbsp;: vous travaillez sur **votre copie**.
+Vous ne pushez pas sur mon repo&nbsp;: vous travaillez sur **votre copie**.
 
 </div>
 
@@ -357,7 +357,7 @@ flowchart LR
 
 <div class="pt-4 text-sm op-75">
 <b>Aujourd’hui</b>&nbsp;: forkez, clonez, committez, poussez. Tout se passe chez vous.<br/>
-<b>Dès demain</b>&nbsp;: une commande de plus pour récupérer le TP du jour depuis mon dépôt.
+<b>Dès demain</b>&nbsp;: une commande de plus pour récupérer le TP du jour depuis mon repo.
 </div>
 
 ---
@@ -384,14 +384,14 @@ flowchart RL
 <v-click>
 
 <div class="pt-4 text-sm op-75">
-C’est ce qui rend le changement de branche instantané&nbsp;: Git ne rejoue rien, il restaure une photo.
+C’est ce qui rend le changement de branch instantané&nbsp;: Git ne rejoue rien, il restaure une photo.
 </div>
 
 </v-click>
 
 ---
 
-# Une branche n’est qu’un pointeur
+# Une branch n’est qu’un pointeur
 
 ```mermaid {scale: 0.68}
 %%{init: {'theme':'base','themeVariables':{'fontFamily':'Roboto, ui-sans-serif, sans-serif','fontSize':'14px','lineColor':'#94a3b8','primaryTextColor':'#0f172a'}}}%%
@@ -411,16 +411,16 @@ flowchart RL
 
 <v-clicks>
 
-- Une branche, c’est **un nom qui pointe vers un commit**. Rien d’autre, 40 octets sur le disque.
+- Une branch, c’est **un nom qui pointe vers un commit**. Rien d’autre, 40 octets sur le disque.
 - La créer ne copie aucun fichier&nbsp;: c’est pour ça que c’est instantané
-- `HEAD` dit sur quelle branche vous êtes. Changer de branche, `git switch`, ne fait que le déplacer.
+- `HEAD` dit sur quelle branch vous êtes. Changer de branch, `git switch`, ne fait que le déplacer.
 
 </v-clicks>
 
 <v-click>
 
 <div class="pt-4 p-3 bg-blue-500 bg-opacity-10 rounded text-sm">
-Vous venez du C++&nbsp;: une branche est <b>littéralement un pointeur</b>. Commiter fait avancer le pointeur d’un cran.
+Vous venez du C++&nbsp;: une branch est <b>littéralement un pointeur</b>. Commiter fait avancer le pointeur d’un cran.
 </div>
 
 </v-click>
@@ -436,8 +436,8 @@ Vous venez du C++&nbsp;: une branche est <b>littéralement un pointeur</b>. Comm
 flowchart LR
   WS["Workspace<br/>📝 vos fichiers"]
   ST["Staging<br/>📋 ce qui ira dans le commit"]
-  LR["Dépôt local<br/>📦 votre historique"]
-  RR["Dépôt distant<br/>☁️ GitHub"]
+  LR["Repo local<br/>📦 votre historique"]
+  RR["Repo distant<br/>☁️ GitHub"]
 
   WS -->|git add| ST
   ST -->|git commit| LR
@@ -469,14 +469,14 @@ gitGraph
   commit id: "feat: Model"
   commit id: "feat: ModelZoo"
   checkout main
-  merge tp01-modelzoo id: "fusion"
+  merge tp01-modelzoo id: "merge"
   commit id: "suite..."
 ```
 
 <v-clicks>
 
-- Une **branche** par fonctionnalité&nbsp;: on ne travaille jamais directement sur `main`
-- On y travaille tranquillement, puis on la **fusionne** dans `main`
+- Une **branch** par fonctionnalité&nbsp;: on ne travaille jamais directement sur `main`
+- On y travaille tranquillement, puis on la **merge** dans `main`
 - `main` doit **toujours** rester dans un état qui fonctionne
 
 </v-clicks>
@@ -484,7 +484,7 @@ gitGraph
 <v-click>
 
 <div class="pt-6 text-sm op-75">
-En équipe, cette fusion se demande par une <b>pull request</b>, et c’est là qu’on relit le code d’un collègue. Vous en ferez sur le projet final, en binôme.
+En équipe, ce merge se demande par une <b>pull request</b>, et c’est là qu’on relit le code d’un collègue. Vous en ferez sur le projet final, en binôme.
 </div>
 
 </v-click>
@@ -626,12 +626,12 @@ layout: center
 <div class="pt-4 text-left max-w-3xl mx-auto">
 
 ```sh
-# 1. Forker le dépôt du cours (sur GitHub, un bouton)
+# 1. Forker le repo du cours (sur GitHub, un bouton)
 # 2. Récupérer ma copie
 git clone https://github.com/MOI/ismin-web-2026-tps.git
 cd ismin-web-2026-tps
 
-# 3. Travailler sur une branche, et la publier tout de suite
+# 3. Travailler sur une branch, et la publier tout de suite
 git switch -c tp01-modelzoo
 git push -u origin tp01-modelzoo
 
@@ -653,9 +653,9 @@ layout: section
 
 <div class="pt-8 text-sm inline-block text-left">
 
-1. **Forkez** le dépôt du cours sur GitHub
+1. **Forkez** le repo du cours sur GitHub
 2. **Clonez** votre fork
-3. Créez la branche `tp01-modelzoo`
+3. Créez la branch `tp01-modelzoo`
 4. **Poussez-la** tout de suite&nbsp;: `git push -u origin tp01-modelzoo`
 5. Vérifiez votre environnement&nbsp;: `node --version` → doit afficher `v26.x`
 
@@ -1254,7 +1254,7 @@ datasets.filter((d) => d.org === "mozilla");
 <v-click>
 
 <div class="pt-6 text-sm op-75">
-Dans <code>(d) => …</code>, le paramètre n’a pas de type écrit&nbsp;: TypeScript le <b>déduit</b> du tableau sur lequel on appelle la méthode. Vous en écrirez une par méthode de tableau, un peu plus loin.
+Dans <code>(d) => …</code>, le paramètre n’a pas de type écrit&nbsp;: TypeScript le <b>déduit</b> de l’array sur lequel on appelle la méthode. Vous en écrirez une par méthode d’array, un peu plus loin.
 </div>
 
 </v-click>
@@ -1304,7 +1304,7 @@ const l3: Licence = "gpl-3.0";       // ❌ erreur à la compilation
 
 <div class="pt-6">
 
-Ni une énumération, ni une chaîne libre&nbsp;: **la liste exacte des valeurs autorisées**.
+Ni un `enum`, ni une string libre&nbsp;: **la liste exacte des valeurs autorisées**.
 L’éditeur vous les propose en autocomplétion, et le compilateur refuse tout le reste.
 
 **Au TP**&nbsp;: le champ `task` de vos modèles demande exactement ce type de déclaration.
@@ -1326,7 +1326,7 @@ const hub: Map<string, Dataset> = new Map();
 
 <div class="pt-6">
 
-Le type entre chevrons dit **ce que contient** le tableau ou la `Map`. `Array<Dataset>` s’écrit aussi `Dataset[]`, c’est identique.
+Le type entre chevrons dit **ce que contient** l’array ou la `Map`. `Array<Dataset>` s’écrit aussi `Dataset[]`, c’est identique.
 
 </div>
 
@@ -1343,7 +1343,7 @@ const hub = new Map<string, Dataset>();
 hub.set(dataset.name, dataset);   // ajouter ou remplacer
 hub.get("squad");                 // Dataset | undefined
 hub.size;                         // nombre d'entrées
-Array.from(hub.values());         // toutes les valeurs, dans un tableau
+Array.from(hub.values());         // toutes les valeurs, dans un array
 ```
 
 </div>
@@ -1436,11 +1436,11 @@ Vous le retrouverez partout dès demain&nbsp;: c’est ainsi que NestJS reçoit 
 
 ---
 
-# Les méthodes de tableau
+# Les méthodes d’array
 
 <div class="pt-4">
 
-En JavaScript, on ne parcourt pas un tableau avec une boucle `for`&nbsp;: **on enchaîne des méthodes**.
+En JavaScript, on ne parcourt pas un array avec une boucle `for`&nbsp;: **on enchaîne des méthodes**.
 
 </div>
 
@@ -1449,8 +1449,8 @@ En JavaScript, on ne parcourt pas un tableau avec une boucle `for`&nbsp;: **on e
 </div>
 
 <div class="pt-8 text-sm op-75">
-Chacune prend une <b>lambda</b> en paramètre et l’applique à chaque élément. Aucune ne modifie le tableau d’origine&nbsp;:
-elles <b>renvoient un nouvel objet&nbsp;:</b> tableau, booléen ou chaîne selon la méthode.
+Chacune prend une <b>lambda</b> en paramètre et l’applique à chaque élément. Aucune ne modifie l’array d’origine&nbsp;:
+elles <b>renvoient un nouvel objet&nbsp;:</b> array, boolean ou string selon la méthode.
 </div>
 
 ---
@@ -1476,14 +1476,14 @@ const datasets: Dataset[] = [
 ```
 
 <div class="pt-3 text-sm op-75">
-On garde ce tableau pour les six slides qui suivent.
+On garde cet array pour les six slides qui suivent.
 </div>
 
 ---
 
 # `.some()` et `.every()`&nbsp;: répondre par oui ou non
 
-<div class="pt-2 text-sm op-75">Les deux renvoient un <b>booléen</b>, jamais un tableau.</div>
+<div class="pt-2 text-sm op-75">Les deux renvoient un <b>boolean</b>, jamais un array.</div>
 
 ```ts
 // .some() : vrai si AU MOINS UN élément satisfait la condition
@@ -1507,7 +1507,7 @@ Utiles pour valider&nbsp;: « est-ce que tous les datasets ont un nom&nbsp;? »,
 
 # `.filter()`&nbsp;: garder certains éléments
 
-<div class="pt-2 text-sm op-75">Renvoie un <b>nouveau tableau</b> avec les éléments pour lesquels la fonction renvoie <code>true</code>.</div>
+<div class="pt-2 text-sm op-75">Renvoie un <b>nouvel array</b> avec les éléments pour lesquels la fonction renvoie <code>true</code>.</div>
 
 ```ts
 datasets.filter((d) => d.org === "HuggingFaceFW")
@@ -1518,7 +1518,7 @@ datasets.filter((d) => d.downloads > 2_000_000)
 // [ { name: "common_voice", org: "mozilla", … } ]
 
 datasets.filter((d) => d.licence === "propriétaire")
-// []   ← aucun résultat, mais bien un tableau
+// []   ← aucun résultat, mais bien un array
 ```
 
 <v-click>
@@ -1533,7 +1533,7 @@ C’est exactement ce dont vous aurez besoin dans dix minutes pour <code>getMode
 
 # `.map()`&nbsp;: transformer chaque élément
 
-<div class="pt-2 text-sm op-75">Renvoie un nouveau tableau de <b>même longueur</b>, où chaque élément a été transformé.</div>
+<div class="pt-2 text-sm op-75">Renvoie un nouvel array de <b>même longueur</b>, où chaque élément a été transformé.</div>
 
 ```ts
 datasets.map((d) => d.name)
@@ -1558,7 +1558,7 @@ datasets.map((d) => ({ nom: d.name, éditeur: d.org }))
 
 # Les enchaîner
 
-<div class="pt-2 text-sm op-75">Chaque méthode renvoie un tableau, donc on peut appeler la suivante dessus.</div>
+<div class="pt-2 text-sm op-75">Chaque méthode renvoie un array, donc on peut appeler la suivante dessus.</div>
 
 ```ts {1-2|4-6|8-11|all}
 datasets.filter((d) => d.org === "HuggingFaceFW")
@@ -1571,7 +1571,7 @@ datasets.filter((d) => d.org === "HuggingFaceFW")
 datasets.filter((d) => d.org === "HuggingFaceFW")
         .map((d) => d.name)
         .join(", ")
-// "fineweb, fineweb-edu"       ← .join() produit une chaîne
+// "fineweb, fineweb-edu"       ← .join() produit une string
 ```
 
 <v-click>
@@ -1589,7 +1589,7 @@ La même chose en boucle `for` prendrait dix lignes et une variable temporaire.
 
 # `.reduce()`&nbsp;: tout replier en une seule valeur
 
-<div class="pt-2 text-sm op-75">La plus puissante&nbsp;: elle renvoie ce que vous voulez, un nombre, une chaîne, un objet.</div>
+<div class="pt-2 text-sm op-75">La plus puissante&nbsp;: elle renvoie ce que vous voulez, un number, une string, un object.</div>
 
 ```ts {1-4|6-11|all}
 // Un accumulateur, une valeur de départ, et on replie
@@ -1743,7 +1743,7 @@ describe("ModelZoo", () => {           // un groupe de tests
 
 <div class="pt-4">
 
-Les assertions les plus fréquentes&nbsp;: `toBe` (égalité stricte), `toEqual` (égalité en profondeur, pour les objets et tableaux), `toHaveLength`, `toBeUndefined`.
+Les assertions les plus fréquentes&nbsp;: `toBe` (égalité stricte), `toEqual` (égalité en profondeur, pour les objects et arrays), `toHaveLength`, `toBeUndefined`.
 
 **Le nom du test dit ce qui est attendu.** Lisez-les avant de coder&nbsp;: ils sont la spécification.
 
@@ -1863,7 +1863,7 @@ Trouvez comment, écrivez le test qui le démontre, puis rendez-le impossible.
 <div class="text-sm">
 
 **3. Regrouper.** Ajoutez `groupByTask()` qui renvoie les modèles rangés par tâche.
-Contraintes&nbsp;: **un seul parcours** du tableau, et **aucun `any`** dans la signature.
+Contraintes&nbsp;: **un seul parcours** de l’array, et **aucun `any`** dans la signature.
 
 </div>
 
@@ -1911,7 +1911,7 @@ Relire son propre code avant de l’enregistrer&nbsp;: le réflexe qui vous dist
 <div class="grid grid-cols-2 gap-6 pt-4">
 <div>
 
-### Approche A&nbsp;: un tableau
+### Approche A&nbsp;: un array
 
 ```ts
 private models: Model[] = [];
@@ -1941,7 +1941,7 @@ addModel(model: Model): void {
 
 <div class="pt-8">
 
-Le test *« remplace un modèle déjà présent »* départage les deux&nbsp;: avec un tableau, il faut
+Le test *« remplace un modèle déjà présent »* départage les deux&nbsp;: avec un array, il faut
 chercher puis remplacer à la main&nbsp;; avec une `Map`, `set` écrase la clé et c’est fini.
 
 **Aucune des deux n’est fausse.** L’une demande plus de code que l’autre&nbsp;: c’est ça, une décision de conception.

@@ -1,0 +1,30 @@
+/**
+ * The domain types: the ones you wrote in TP1, plus the TASKS list that the
+ * validation needs. Given: read it, don't change it.
+ */
+
+export type Task =
+  | 'text-generation'
+  | 'translation'
+  | 'image-classification'
+  | 'speech-to-text';
+
+export const TASKS: Task[] = [
+  'text-generation',
+  'translation',
+  'image-classification',
+  'speech-to-text',
+];
+
+export interface Model {
+  /** URL-safe slug, unique in the catalogue. E.g. "mistral-7b-instruct-v0-3" */
+  id: string;
+  name: string;
+  org: string;
+  task: Task;
+  /** in billions */
+  parameters: number;
+  downloads: number;
+  /** when the model card declares one */
+  license?: string;
+}

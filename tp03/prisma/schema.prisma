@@ -1,0 +1,26 @@
+// The schema is the source of truth: it describes the database AND the
+// TypeScript types. The two cannot drift apart.
+
+datasource db {
+  provider = "sqlite"
+}
+
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  moduleFormat        = "esm"
+  importFileExtension = "js"
+}
+
+// 👉 STEP 2: Describe the `Model` entity, with the fields of
+//    src/models/model.ts, same names. The README lists the decisions to make.
+//
+// Syntax reminder:
+//   model Thing {
+//     field Type @attribute
+//   }
+//
+// Once written:  npx prisma migrate dev --name init
+
+// 👉 STEP 5: Then add an `Organisation` entity and replace the plain
+//    `org` text field with a real relation. See the README.
