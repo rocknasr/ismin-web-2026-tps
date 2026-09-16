@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ModelsController } from './models.controller.js';
+import { ModelsLoaderService } from './models-loader.service.js';
 import { ModelsService } from './models.service.js';
 
 /**
@@ -7,7 +8,7 @@ import { ModelsService } from './models.service.js';
  */
 @Module({
   controllers: [ModelsController],
-  providers: [ModelsService],
+  providers: [ModelsService, ModelsLoaderService],
   exports: [],
 })
 export class ModelsModule {}
