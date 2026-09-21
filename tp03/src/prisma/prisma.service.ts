@@ -20,7 +20,7 @@ export class PrismaService
 
     super({
       adapter: new PrismaBetterSqlite3({ url }),
-      // log: ['query'],
+      log: ['query'],
     });
   }
 

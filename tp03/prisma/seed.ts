@@ -3,9 +3,9 @@
  *
  *   npm run db:seed
  *
- * 👉 STEP 6: this script works as-is once step 2 is done.
- *    After step 5 (the Organisation relation) you will need to adapt it:
- *    create the organisations before the models.
+ * Organisations are inserted first, one per distinct slug found in the
+ * data, then models are linked to them by that slug. Order matters: the
+ * foreign key on Model.orgId is required.
  */
 import { readFile } from 'node:fs/promises';
 import 'dotenv/config';
@@ -29,15 +29,39 @@ async function main(): Promise<void> {
   const raw = await readFile('data/models.json', 'utf8');
   const models = JSON.parse(raw) as ModelSeed[];
 
-  for (const model of models) {
-    await prisma.model.upsert({
-      where: { id: model.id },
-      create: model,
-      update: model,
+  // A model cannot point to an organisation that does not exist yet:
+  // create every organisation first, one row per distinct slug.
+  const orgSlugs = [...new Set(models.map((model) => model.org))];
+  for (const slug of orgSlugs) {
+    await prisma.organisation.upsert({
+      where: { slug },
+      create: { slug, name: slug },
+      update: {},
     });
   }
 
-  console.log(`✅ ${models.length} models inserted`);
+  for (const model of models) {
+    await prisma.model.upsert({
+      where: { id: model.id },
+      create: {
+        id: model.id,
+        name: model.name,
+        task: model.task,
+        parameters: model.parameters,
+        downloads: model.downloads,
+        organisation: { connect: { slug: model.org } },
+      },
+      update: {
+        name: model.name,
+        task: model.task,
+        parameters: model.parameters,
+        downloads: model.downloads,
+        organisation: { connect: { slug: model.org } },
+      },
+    });
+  }
+
+  console.log(`✅ ${orgSlugs.length} organisations, ${models.length} models inserted`);
 }
 
 main()

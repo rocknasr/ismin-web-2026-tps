@@ -189,13 +189,18 @@ describe('/models API (persisted)', () => {
       expect(response.body.id).toBe(mistral.id);
     });
 
-    it('replaces an existing model instead of duplicating it', async () => {
+    it('rejects a duplicate id instead of overwriting the existing model', async () => {
       await service.create(mistral as never);
-      await service.create({ ...mistral, downloads: 9_999_999 } as never);
 
+      await request(app.getHttpServer())
+        .post('/models')
+        .send({ ...mistral, downloads: 9_999_999 })
+        .expect(409);
+
+      // Untouched: the original model is still there, unchanged
       const all = await service.findAll();
       expect(all).toHaveLength(1);
-      expect(all[0].downloads).toBe(9_999_999);
+      expect(all[0].downloads).toBe(mistral.downloads);
     });
   });
 });

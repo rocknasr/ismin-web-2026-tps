@@ -12,15 +12,27 @@ generator client {
   importFileExtension = "js"
 }
 
-// 👉 STEP 2: Describe the `Model` entity, with the fields of
-//    src/models/model.ts, same names. The README lists the decisions to make.
-//
-// Syntax reminder:
-//   model Thing {
-//     field Type @attribute
-//   }
-//
-// Once written:  npx prisma migrate dev --name init
+model Organisation {
+  id      String  @id @default(uuid())
+  slug    String  @unique
+  name    String
+  country String?
 
-// 👉 STEP 5: Then add an `Organisation` entity and replace the plain
-//    `org` text field with a real relation. See the README.
+  // The other side of the relation. Not a column: Prisma reads it back
+  // through Model.orgId.
+  models Model[]
+}
+
+model Model {
+  id         String  @id
+  name       String
+  task       String
+  parameters Float
+  downloads  Int
+  license    String?
+
+  // A model belongs to exactly one organisation: the foreign key is
+  // required, so there is no such thing as an orphan model.
+  orgId        String
+  organisation Organisation @relation(fields: [orgId], references: [id])
+}
