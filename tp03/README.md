@@ -4,7 +4,7 @@
 
 ## 🎯 Objectif
 
-Vos données survivent à un redémarrage : la `Map` en mémoire devient une vraie base de données relationnelle, **sans changer l'API**. Mêmes routes, mêmes status codes, même validation, mêmes tests qu'hier.
+Vos données survivent à un redémarrage : la `Map` en mémoire devient une vraie base de données relationnelle, **sans changer l'API**. Mêmes routes, même validation, mêmes tests qu'hier, à une exception près : créer un model dont l'id existe déjà répond 409, au lieu de le remplacer.
 
 Si la séparation controller / service d'hier était la bonne, seul le service change. C'est le test.
 
@@ -20,7 +20,7 @@ npm run test:watch         # les tests d'hier, dans un second terminal
 
 `.env` et `*.db` sont ignorés par Git. On partage les migrations, jamais une base.
 
-`src/models/` contient le corrigé du TP2. Comparez votre controller avec celui fourni : la seule différence aujourd'hui, c'est un `await` sur chaque route. Votre `ModelZoo` prend sa retraite, plus rien ne l'importe.
+`src/models/` contient le corrigé du TP2. Comparez votre controller avec celui fourni : la seule différence aujourd'hui, c'est un `await` sur chaque route, et un cas de plus : le 409 quand l'id existe déjà. Votre `ModelZoo` prend sa retraite, plus rien ne l'importe.
 
 C'est tout, vous pouvez coder !
 
@@ -85,6 +85,7 @@ npx prisma generate                  # le client TypeScript, régénéré
 
 - `findUnique` ne renvoie pas `undefined` quand rien ne correspond. Que renvoie-t-il, et qu'attend le controller ?
 - `delete` sur une row absente ne renvoie pas `false`. Lisez l'erreur.
+- Un id déjà pris : regardez ce que le controller attend de vous. Le service ne connaît pas HTTP.
 - Le compilateur refuse de traiter une row de la base comme un `Model`, et il a raison. Convertissez à la frontière, en un seul endroit, et faites-y passer chaque méthode.
 
 ### Étape 5 : une vraie relation

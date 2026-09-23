@@ -1,0 +1,34 @@
+import { Body, Controller, Get, HttpCode, Post, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { findUser } from '../users.js';
+import { AuthGuard, type AuthenticatedRequest, type JwtPayload } from './auth.guard.js';
+import { LoginDto } from './dto/login.dto.js';
+import { verifyPassword } from './password.js';
+
+/**
+ * Given.
+ *   POST /auth/login   { username, password }  →  { access_token }, or 401
+ *   GET  /auth/whoami  with a Bearer token      →  the token's payload, or 401
+ */
+@Controller('auth')
+export class AuthController {
+  constructor(private readonly jwt: JwtService) {}
+
+  @Post('login')
+  @HttpCode(200)
+  async login(@Body() dto: LoginDto): Promise<{ access_token: string }> {
+    const user = findUser(dto.username);
+    if (!user || !verifyPassword(dto.password, user.passwordHash)) {
+      throw new UnauthorizedException('Wrong username or password');
+    }
+
+    const payload: JwtPayload = { sub: user.id, username: user.username, role: user.role };
+    return { access_token: await this.jwt.signAsync(payload) };
+  }
+
+  @Get('whoami')
+  @UseGuards(AuthGuard)
+  whoami(@Req() request: AuthenticatedRequest): JwtPayload | undefined {
+    return request.user;   // card 6 replaces this @Req() with a decorator of your own
+  }
+}

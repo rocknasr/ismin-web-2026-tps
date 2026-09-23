@@ -7,16 +7,20 @@
     "dev:s01": "slidev s01-git-typescript.md --open",
     "dev:s02": "slidev s02-nestjs.md --open",
     "dev:s03": "slidev s03-persistance.md --open",
-    "build": "npm run build:s01 && npm run build:s02 && npm run build:s03",
+    "dev:s04": "slidev s04-authentification.md --open",
+    "build": "npm run build:s01 && npm run build:s02 && npm run build:s03 && npm run build:s04",
     "build:s01": "slidev build s01-git-typescript.md --base /ismin-web-2026-tps/s01/ --out dist/s01",
     "build:s02": "slidev build s02-nestjs.md --base /ismin-web-2026-tps/s02/ --out dist/s02",
     "build:s03": "slidev build s03-persistance.md --base /ismin-web-2026-tps/s03/ --out dist/s03",
+    "build:s04": "slidev build s04-authentification.md --base /ismin-web-2026-tps/s04/ --out dist/s04",
     "export:s01": "slidev export s01-git-typescript.md --output export/s01.pdf",
     "export:s02": "slidev export s02-nestjs.md --output export/s02.pdf",
     "export:s03": "slidev export s03-persistance.md --output export/s03.pdf",
+    "export:s04": "slidev export s04-authentification.md --output export/s04.pdf",
     "check:s01": "slidev export s01-git-typescript.md --format png --output ../.preview/s01 --timeout 90000",
     "check:s02": "slidev export s02-nestjs.md --format png --output ../.preview/s02 --timeout 90000",
-    "check:s03": "slidev export s03-persistance.md --format png --output ../.preview/s03 --timeout 90000"
+    "check:s03": "slidev export s03-persistance.md --format png --output ../.preview/s03 --timeout 90000",
+    "check:s04": "slidev export s04-authentification.md --format png --output ../.preview/s04 --timeout 90000"
   },
   "dependencies": {
     "@slidev/cli": "^52.0.0",
