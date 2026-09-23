@@ -1,6 +1,5 @@
 import {
   IsIn,
-  IsInt,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -11,7 +10,8 @@ import {
 import { type Task, TASKS } from '../model.js';
 
 /**
- * Given, unchanged from TP2.
+ * Given. `downloads` is not here on purpose: a download count is measured
+ * by the system, never posted by a client.
  *
  * These decorators run at runtime, unlike TypeScript types which are erased
  * at compile time. This is what actually protects the service from whatever
@@ -38,10 +38,6 @@ export class CreateModelDto {
   @IsNumber()
   @Min(0)
   parameters!: number;
-
-  @IsInt()
-  @Min(0)
-  downloads!: number;
 
   @IsOptional()
   @IsString()

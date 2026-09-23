@@ -1,32 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import type { Model as ModelRow, Organisation } from '../generated/prisma/client.js';
 import { PrismaService } from '../prisma/prisma.service.js';
-import { Model, ModelAlreadyExists, Task } from './model.js';
+import { Model, ModelAlreadyExists, Task, UnknownOrganisation } from './model.js';
 
 /** A row of the Model table with its organisation loaded (`include`). */
 type ModelWithOrg = ModelRow & { org: Organisation };
 
+/** What a client may change on an existing model. */
+export type ModelPatch = Partial<Pick<Model, 'name' | 'task' | 'parameters' | 'license'>>;
+
 /**
- * TP3 solution: the service, backed by the database, relation included.
- * Only the simplest Prisma calls: findUnique, findMany, create, delete.
+ * Given: the TP3 solution, with the rules of a real catalogue.
  *
- * 1. `toModel`: the boundary between the database and the domain. SQLite has
- *    no union types, `task` is any string; a nullable column comes back as
- *    `null` where the domain says `undefined`; and the organisation is a row
- *    where the API promises a slug. Everything is narrowed here, once.
+ * - A model points at an organisation that must already exist: the service
+ *   throws `UnknownOrganisation`, the controller answers 422.
+ * - An id is unique: `ModelAlreadyExists`, 409.
+ * - `downloads` starts at 0 and is never set by a client.
+ * - `toModel` is the boundary between the database and the domain: `task`
+ *   narrowed, `null` turned into `undefined`, the organisation row turned
+ *   into its slug. Everything is narrowed here, once.
+ * - `include: { org: true }` on every read, otherwise the N+1 comes back.
  *
- * 2. `include: { org: true }` on every read: one query for the models, one
- *    for the organisations. Without it, the natural loop over the models to
- *    fetch each organisation is the N+1 of step 7.
- *
- * 3. `create` refuses a duplicate: the service checks first and throws a
- *    domain error. It knows nothing about HTTP; the controller turns that
- *    error into a 409.
- *
- * 4. Filtering is a `where` clause, nested for the relation: the database
- *    does the work, with an index. This is why that code belonged here.
- *
- * 5. `delete` throws when nothing matches, so `remove` looks first.
+ * ⚠️ `create` checks then inserts: two queries. Two clients posting the same
+ * id at the same instant both pass the check, and the second one hits the
+ * unique constraint. The constraint is the real guarantee; catching that
+ * Prisma error (code P2002) and answering 409 is the next step of a real
+ * service. Kept simple here.
  */
 @Injectable()
 export class ModelsService {
@@ -44,15 +43,14 @@ export class ModelsService {
     };
   }
 
-  async create(model: Model): Promise<Model> {
+  async create(model: Omit<Model, 'downloads'>): Promise<Model> {
+    const org = await this.prisma.organisation.findUnique({ where: { slug: model.org } });
+    if (!org) throw new UnknownOrganisation(model.org);
+
     const existing = await this.prisma.model.findUnique({ where: { id: model.id } });
     if (existing) throw new ModelAlreadyExists(model.id);
 
-    const { org: slug, ...fields } = model;
-    const org =
-      (await this.prisma.organisation.findUnique({ where: { slug } })) ??
-      (await this.prisma.organisation.create({ data: { slug, name: slug } }));
-
+    const { org: _slug, ...fields } = model;
     const row = await this.prisma.model.create({
       data: { ...fields, orgId: org.id },
       include: { org: true },
@@ -78,6 +76,18 @@ export class ModelsService {
       include: { org: true },
     });
     return row ? this.toModel(row) : null;
+  }
+
+  async update(id: string, patch: ModelPatch): Promise<Model | null> {
+    const existing = await this.prisma.model.findUnique({ where: { id } });
+    if (!existing) return null;
+
+    const row = await this.prisma.model.update({
+      where: { id },
+      data: patch,
+      include: { org: true },
+    });
+    return this.toModel(row);
   }
 
   async remove(id: string): Promise<boolean> {

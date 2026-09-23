@@ -36,8 +36,8 @@ Chaque TP est un projet autonome : `cd tpNN && npm install`.
 | 3 | Persistance : ORM & base de données | [`tp03/`](./tp03) |
 | **Sprint 2 : Sécurité & UI** | | |
 | 4 | Authentification JWT & Guards | [`tp04/`](./tp04) |
-| 5 | React : composants & JSX | `tp05/` |
-| 6 | État local & Hooks | `tp06/` |
+| 5 | L'authentification, suite : les présentations et le TP4 | [`tp04/`](./tp04) |
+| 6 | L'audit d'une vraie API | [`tp05/`](./tp05) |
 | **Sprint 3 : Fusion & QA** | | |
 | 7 | Connecter React à l'API | `tp07/` |
 | 8 | Routage client | `tp08/` |

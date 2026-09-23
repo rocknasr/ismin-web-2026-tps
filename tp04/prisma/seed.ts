@@ -1,16 +1,23 @@
 /**
- * TP3 solution: the seed, after step 5: organisations first, then models,
- * because a model cannot point at an organisation that does not exist yet.
+ * Given. Populates the database from `data/organisations.json`, then from
+ * `data/models.json`: a model can only point at an organisation that exists.
+ * Running it twice changes nothing.
  *
  *   npm run db:seed
  */
-import { readFile } from 'node:fs/promises';
 import 'dotenv/config';
+import { readFile } from 'node:fs/promises';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { PrismaClient } from '../src/generated/prisma/client.js';
 
 const adapter = new PrismaBetterSqlite3({ url: process.env.DATABASE_URL ?? 'file:./dev.db' });
 const prisma = new PrismaClient({ adapter });
+
+interface OrganisationSeed {
+  slug: string;
+  name: string;
+  country?: string;
+}
 
 interface ModelSeed {
   id: string;
@@ -22,29 +29,27 @@ interface ModelSeed {
 }
 
 async function main(): Promise<void> {
-  const raw = await readFile('data/models.json', 'utf8');
-  const models = JSON.parse(raw) as ModelSeed[];
-
-  const slugs = Array.from(new Set(models.map((model) => model.org)));
-  for (const slug of slugs) {
+  const organisations = JSON.parse(await readFile('data/organisations.json', 'utf8')) as OrganisationSeed[];
+  for (const organisation of organisations) {
     await prisma.organisation.upsert({
-      where: { slug },
-      create: { slug, name: slug },
-      update: {},
+      where: { slug: organisation.slug },
+      create: organisation,
+      update: { name: organisation.name, country: organisation.country },
     });
   }
 
+  const models = JSON.parse(await readFile('data/models.json', 'utf8')) as ModelSeed[];
   for (const { org, ...model } of models) {
     const data = { ...model, org: { connect: { slug: org } } };
     await prisma.model.upsert({ where: { id: model.id }, create: data, update: data });
   }
 
-  console.log(`✅ ${slugs.length} organisations, ${models.length} models`);
+  console.log(`✅ ${organisations.length} organisations, ${models.length} models`);
 }
 
 main()
   .catch((error) => {
     console.error(error);
-    process.exit(1);
+    process.exitCode = 1;
   })
   .finally(() => prisma.$disconnect());

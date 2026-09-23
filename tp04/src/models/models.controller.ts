@@ -7,20 +7,21 @@ import {
   HttpCode,
   NotFoundException,
   Param,
+  Patch,
   Post,
   Query,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { CreateModelDto } from './dto/create-model.dto.js';
-import { ModelAlreadyExists, type Model, type Task } from './model.js';
+import { UpdateModelDto } from './dto/update-model.dto.js';
+import { ModelAlreadyExists, UnknownOrganisation, type Model, type Task } from './model.js';
 import { ModelsService } from './models.service.js';
 
 /**
- * Given, and this is the thing to notice: compared to TP2, this file has
- * barely moved. Only `async`/`await` appeared, because the service now
- * talks to the network.
+ * Given: the TP3 solution, with a PATCH route and two more translations.
+ * The service raises domain errors; this is where they become status codes.
  *
- * Routes, status codes, validation: unchanged. That is the payoff of
- * separating controller from service.
+ * Nothing is protected yet: that is the TP.
  */
 @Controller('models')
 export class ModelsController {
@@ -44,11 +45,22 @@ export class ModelsController {
   @Post()
   async create(@Body() dto: CreateModelDto): Promise<Model> {
     try {
-      return await this.modelsService.create(dto as Model);
+      return await this.modelsService.create(dto);
     } catch (error) {
+      if (error instanceof UnknownOrganisation) throw new UnprocessableEntityException(error.message);
       if (error instanceof ModelAlreadyExists) throw new ConflictException(error.message);
       throw error;
     }
+  }
+
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() dto: UpdateModelDto): Promise<Model> {
+    const model = await this.modelsService.update(id, dto);
+
+    if (!model) {
+      throw new NotFoundException(`Model ${id} not found`);
+    }
+    return model;
   }
 
   @Delete(':id')

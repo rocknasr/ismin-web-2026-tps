@@ -1,0 +1,1 @@
+const hash1 = hashPassword

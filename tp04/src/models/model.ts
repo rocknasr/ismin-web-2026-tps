@@ -29,6 +29,13 @@ export interface Model {
   license?: string;
 }
 
+/** Thrown by the service when the organisation a model points at does not exist. */
+export class UnknownOrganisation extends Error {
+  constructor(slug: string) {
+    super(`Unknown organisation ${slug}: create it first`);
+  }
+}
+
 /** Thrown by the service when a model with this id is already in the catalogue. */
 export class ModelAlreadyExists extends Error {
   constructor(id: string) {

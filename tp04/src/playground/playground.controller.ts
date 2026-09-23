@@ -5,4 +5,6 @@ import { Controller } from '@nestjs/common';
  * Add your routes here, and leave src/auth/ as it is.
  */
 @Controller('playground')
-export class PlaygroundController {}
+export class PlaygroundController {
+
+}

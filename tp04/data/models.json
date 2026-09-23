@@ -34,7 +34,7 @@
   {
     "id": "qwen2-5-7b-instruct",
     "name": "Qwen2.5-7B-Instruct",
-    "org": "Qwen",
+    "org": "qwen",
     "task": "text-generation",
     "parameters": 7.62,
     "downloads": 1130000
@@ -50,7 +50,7 @@
   {
     "id": "smollm2-1-7b-instruct",
     "name": "SmolLM2-1.7B-Instruct",
-    "org": "HuggingFaceTB",
+    "org": "huggingfacetb",
     "task": "text-generation",
     "parameters": 1.71,
     "downloads": 195000
@@ -74,7 +74,7 @@
   {
     "id": "opus-mt-en-fr",
     "name": "opus-mt-en-fr",
-    "org": "Helsinki-NLP",
+    "org": "helsinki-nlp",
     "task": "translation",
     "parameters": 0.074,
     "downloads": 1250000

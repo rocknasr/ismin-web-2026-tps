@@ -70,6 +70,8 @@ jobs:
               <li><span class="num">S2</span><a href="./s02/">NestJS : API REST &amp; asynchronisme</a></li>
               <li><span class="num">S3</span><a href="./s03/">Persistance : ORM &amp; base de données</a></li>
               <li><span class="num">S4</span><a href="./s04/">L’authentification : JWT &amp; guards</a></li>
+              <li><span class="num">S5</span><a href="./s04/">L’authentification, suite : les présentations et le TP4</a></li>
+              <li><span class="num">S6</span><a href="./s06/">L’audit d’une vraie API</a></li>
             </ul>
             <p class="sub">Les énoncés de TP sont dans <a href="https://github.com/gaetanmaisse/ismin-web-2026-tps">ce dépôt</a>.</p>
           </body>
