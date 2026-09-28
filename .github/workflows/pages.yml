@@ -72,6 +72,8 @@ jobs:
               <li><span class="num">S4</span><a href="./s04/">L’authentification : JWT &amp; guards</a></li>
               <li><span class="num">S5</span><a href="./s04/">L’authentification, suite : les présentations et le TP4</a></li>
               <li><span class="num">S6</span><a href="./s06/">L’audit d’une vraie API</a></li>
+              <li><span class="num">S7</span><a href="./s07/">React : du composant à l’API</a></li>
+              <li><span class="num">⭐</span><a href="./projet/">Le projet : une application pour un client</a></li>
             </ul>
             <p class="sub">Les énoncés de TP sont dans <a href="https://github.com/gaetanmaisse/ismin-web-2026-tps">ce dépôt</a>.</p>
           </body>

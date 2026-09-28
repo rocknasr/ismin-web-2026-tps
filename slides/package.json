@@ -8,7 +8,7 @@
     "dev:s02": "slidev s02-nestjs.md --open",
     "dev:s03": "slidev s03-persistance.md --open",
     "dev:s04": "slidev s04-authentification.md --open",
-    "build": "npm run build:s01 && npm run build:s02 && npm run build:s03 && npm run build:s04 && npm run build:s06",
+    "build": "npm run build:s01 && npm run build:s02 && npm run build:s03 && npm run build:s04 && npm run build:s06 && npm run build:s07 && npm run build:projet",
     "build:s01": "slidev build s01-git-typescript.md --base /ismin-web-2026-tps/s01/ --out dist/s01",
     "build:s02": "slidev build s02-nestjs.md --base /ismin-web-2026-tps/s02/ --out dist/s02",
     "build:s03": "slidev build s03-persistance.md --base /ismin-web-2026-tps/s03/ --out dist/s03",
@@ -24,7 +24,15 @@
     "dev:s06": "slidev s06-audit.md --open",
     "build:s06": "slidev build s06-audit.md --base /ismin-web-2026-tps/s06/ --out dist/s06",
     "export:s06": "slidev export s06-audit.md --output export/s06.pdf",
-    "check:s06": "slidev export s06-audit.md --format png --output ../.preview/s06 --timeout 90000"
+    "check:s06": "slidev export s06-audit.md --format png --output ../.preview/s06 --timeout 90000",
+    "dev:s07": "slidev s07-react.md --open",
+    "build:s07": "slidev build s07-react.md --base /ismin-web-2026-tps/s07/ --out dist/s07",
+    "export:s07": "slidev export s07-react.md --output export/s07.pdf",
+    "check:s07": "slidev export s07-react.md --format png --output ../.preview/s07 --timeout 90000",
+    "dev:projet": "slidev projet.md --open",
+    "build:projet": "slidev build projet.md --base /ismin-web-2026-tps/projet/ --out dist/projet",
+    "export:projet": "slidev export projet.md --output export/projet.pdf",
+    "check:projet": "slidev export projet.md --format png --output ../.preview/projet --timeout 90000"
   },
   "dependencies": {
     "@slidev/cli": "^52.0.0",

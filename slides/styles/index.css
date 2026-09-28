@@ -1,0 +1,14 @@
+/*
+ * Chargé par Slidev pour tous les decks.
+ *
+ * Pas de ligatures dans le code : JetBrains Mono dessine `=>` comme une flèche,
+ * `<>` comme un losange, `/>` et `</` comme un seul signe. Les élèves doivent
+ * voir les caractères qu'ils tapent au clavier.
+ */
+code,
+pre,
+.slidev-code,
+.shiki {
+  font-variant-ligatures: none;
+  font-feature-settings: 'liga' 0, 'calt' 0;
+}
