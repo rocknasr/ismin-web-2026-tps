@@ -45,9 +45,12 @@ export async function fetchModels(task?: Task): Promise<Model[]> {
 }
 
 /**
- * TODO step 4. GET /models/:id. An unknown id: the API answers 404, and
- * throwIfNotOk turns it into an ApiError whose `status` is 404.
+ * GET /models/:id. An unknown id: the API answers 404, and throwIfNotOk turns
+ * it into an ApiError whose `status` is 404.
  */
 export async function fetchModel(id: string): Promise<Model> {
-  throw new Error(`TODO step 4: GET /models/${id}`);
+  const url = `${API_URL}/models/${id}`;
+  const res = await fetch(url);
+  await throwIfNotOk(res);
+  return (await res.json()) as Model;
 }

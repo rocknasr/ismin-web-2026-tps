@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import { formatDownloads, formatParameters } from '../format';
 import { TASK_LABELS, type Model } from '../model';
 
@@ -6,15 +7,16 @@ interface ModelCardProps {
 }
 
 /**
- * Given, from TP7. One model of the catalogue.
- *
- * TODO step 3: the name becomes a link to the page of the model, /models/<id>.
+ * Given, from TP7. One model of the catalogue. Its name is a link to the page
+ * of the model, /models/<id>.
  */
 export const ModelCard = ({ model }: ModelCardProps) => {
   return (
     <article className="card">
       <header className="card-header">
-        <h2 className="card-title">{model.name}</h2>
+        <h2 className="card-title">
+          <Link to={`/models/${model.id}`}>{model.name}</Link>
+        </h2>
         <span className="badge">{TASK_LABELS[model.task]}</span>
       </header>
       <p className="card-org">{model.org}</p>

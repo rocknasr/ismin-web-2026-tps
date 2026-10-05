@@ -1,56 +1,82 @@
+import { useQuery } from '@tanstack/react-query';
+import { Link, useParams } from 'react-router';
+import { ApiError, fetchModel } from '../api';
+import { formatDownloads, formatParameters } from '../format';
+import { TASK_LABELS } from '../model';
+
 /**
- * The page of one model, at /models/:id.
- *
- * TODO step 3: the <a href> becomes a <Link to>.
- *
- * TODO step 4. Below, the mockup: written by hand, for Mistral. Make it show
- * the model of the URL.
- *   - the id in the URL: useParams
- *   - the model: useQuery, with the key ['model', id] and fetchModel(id)
- *   - the three states, like CatalogPage. A 404 of the API: "Modèle introuvable."
- *   - the numbers with format.ts, the task with TASK_LABELS
- *   - no licence: "Non précisée". No createdBy: no "Ajouté par" line
+ * The page of one model, at /models/:id: the model whose id is in the URL.
+ * Three states, like CatalogPage. A 404 of the API means the model does not
+ * exist: "Modèle introuvable.", not a generic error.
  */
 export const ModelPage = () => {
+  // The route is /models/:id, so the id is always there on this page.
+  // React Router can't know that at compile time, hence the `!`.
+  const id = useParams().id!;
+
+  // The key holds the id: one cache entry per model. A new id, a new query.
+  const { data, error, isPending, isError } = useQuery({
+    queryKey: ['model', id],
+    queryFn: () => fetchModel(id),
+  });
+
   return (
     <section className="page">
-      <a className="back" href="/">
+      <Link className="back" to="/">
         ← Retour au catalogue
-      </a>
+      </Link>
 
-      <article className="detail">
-        <header className="detail-header">
-          <h2 className="detail-title">Mistral-7B-Instruct-v0.3</h2>
-          <span className="badge">Génération de texte</span>
-        </header>
+      {isPending && (
+        <p className="status" role="status">
+          Chargement…
+        </p>
+      )}
+      {isError && (
+        <div className="error" role="alert">
+          <span>
+            {error instanceof ApiError && error.status === 404
+              ? 'Modèle introuvable.'
+              : `Impossible de charger le modèle : ${error.message}`}
+          </span>
+        </div>
+      )}
+      {data && (
+        <article className="detail">
+          <header className="detail-header">
+            <h2 className="detail-title">{data.name}</h2>
+            <span className="badge">{TASK_LABELS[data.task]}</span>
+          </header>
 
-        <dl className="detail-fields">
-          <div>
-            <dt>Identifiant</dt>
-            <dd>mistral-7b-instruct-v0-3</dd>
-          </div>
-          <div>
-            <dt>Organisation</dt>
-            <dd>mistralai</dd>
-          </div>
-          <div>
-            <dt>Paramètres</dt>
-            <dd>7,25 milliards</dd>
-          </div>
-          <div>
-            <dt>Téléchargements</dt>
-            <dd>1 420 000</dd>
-          </div>
-          <div>
-            <dt>Licence</dt>
-            <dd>apache-2.0</dd>
-          </div>
-          <div>
-            <dt>Ajouté par</dt>
-            <dd>alice</dd>
-          </div>
-        </dl>
-      </article>
+          <dl className="detail-fields">
+            <div>
+              <dt>Identifiant</dt>
+              <dd>{data.id}</dd>
+            </div>
+            <div>
+              <dt>Organisation</dt>
+              <dd>{data.org}</dd>
+            </div>
+            <div>
+              <dt>Paramètres</dt>
+              <dd>{formatParameters(data.parameters)}</dd>
+            </div>
+            <div>
+              <dt>Téléchargements</dt>
+              <dd>{formatDownloads(data.downloads)}</dd>
+            </div>
+            <div>
+              <dt>Licence</dt>
+              <dd>{data.license ?? 'Non précisée'}</dd>
+            </div>
+            {data.createdBy && (
+              <div>
+                <dt>Ajouté par</dt>
+                <dd>{data.createdBy}</dd>
+              </div>
+            )}
+          </dl>
+        </article>
+      )}
     </section>
   );
 };
