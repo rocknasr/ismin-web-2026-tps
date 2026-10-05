@@ -43,7 +43,7 @@ Chaque TP est un projet autonome : `cd tpNN && npm install`.
 | 8 | React, la suite : le réseau et le CORS | [`tp07/`](./tp07) |
 | 9 | Annulée : finir le TP7 chez soi, avancer le projet | |
 | **Sprint 4 : l'application complète** | | |
-| 10 | Le routage, la connexion et les formulaires | [`tp08/`](./tp08), `tp09/` |
+| 10 | Le routage, la connexion et les formulaires | [`tp08/`](./tp08), [`tp09/`](./tp09) |
 | 11 | Docker : l'application en une commande | `tp10/` |
 | 12 | Les tests : écrire les siens | `tp11/` |
 

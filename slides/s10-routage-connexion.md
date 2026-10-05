@@ -600,10 +600,10 @@ Entre guillemets, les accolades restent du texte. Des accolades, puis des backqu
 
 Pour y arriver&nbsp;:
 
-- un **formulaire** que React contrôle&nbsp;;
 - la **connexion**, et un token à garder&nbsp;;
 - le token **partagé** avec toute l’application&nbsp;;
 - une **page protégée**, qui renvoie vers la connexion&nbsp;;
+- un **formulaire** que React contrôle&nbsp;;
 - les **erreurs de l’API**, lisibles par un humain.
 
 </div>
@@ -614,139 +614,7 @@ Pour y arriver&nbsp;:
 layout: section
 ---
 
-# 4. Les formulaires
-
----
-
-# Le formulaire contrôlé
-
-<div class="grid grid-cols-5 gap-6 pt-2">
-<div class="col-span-3">
-
-```tsx
-const [username, setUsername] = useState('');
-
-<input
-  id="username"
-  value={username}
-  onChange={(e) => setUsername(e.target.value)}
-/>
-```
-
-<BrowserFrame url="localhost:5173/login">
-<label for="demo-username" style="display: block; font-size: 14px;">Identifiant</label>
-<input id="demo-username" value="alice" readonly style="margin-top: 4px; padding: 2px 6px; border: 1px solid #767676; border-radius: 3px; background: #fff; color: #000;" />
-</BrowserFrame>
-
-</div>
-<div class="col-span-2 text-sm">
-
-<v-clicks>
-
-- **La valeur du champ vient de l’état**, pas du navigateur. L’état React est la seule source de vérité.
-- Chaque touche&nbsp;: `onChange`, puis `setUsername`, puis un rendu, et le champ affiche la nouvelle valeur.
-- `value` sans `onChange`&nbsp;: le champ est figé, on ne peut plus rien taper. React le signale dans la console.
-- Un `<input type="number">` donne **une chaîne**&nbsp;: `Number(parameters)` avant de l’envoyer.
-
-</v-clicks>
-
-</div>
-</div>
-
----
-
-# Envoyer le formulaire
-
-<div class="grid grid-cols-5 gap-6 pt-2">
-<div class="col-span-3">
-
-```tsx
-import { type SubmitEvent } from 'react';
-
-const { login } = useAuth();    // celui du contexte
-const navigate = useNavigate();
-
-const handleSubmit = async (
-  event: SubmitEvent<HTMLFormElement>,
-) => {
-  event.preventDefault();       // pas de rechargement
-  try {
-    await login(username, password);
-    navigate('/', { replace: true });
-  } catch (err) {
-    setError(…);   // le 401 : « Les erreurs de l’API »
-  }
-};
-
-<form onSubmit={handleSubmit}>
-  {/* les champs */}
-  <button type="submit">Se connecter</button>
-</form>
-```
-
-</div>
-<div class="col-span-2 text-sm">
-
-<v-clicks>
-
-- **`onSubmit` sur le `<form>`**, pas `onClick` sur le bouton&nbsp;: la touche Entrée dans un champ envoie aussi le formulaire.
-- **`preventDefault()`**&nbsp;: sans lui, le navigateur fait ce qu’un formulaire HTML fait depuis 1995. Il met les champs dans l’adresse, mot de passe compris, et **recharge la page**.
-- `async`&nbsp;: on attend la réponse de l’API avant de changer de page.
-- `SubmitEvent`, importé de `react`. Les tutos écrivent encore `FormEvent`, marqué obsolète dans les types de React 19.
-
-</v-clicks>
-
-</div>
-</div>
-
----
-
-# Naviguer depuis le code
-
-<div class="grid grid-cols-2 gap-8 pt-2">
-<div>
-
-**Après une action**&nbsp;: `useNavigate`
-
-```tsx
-const navigate = useNavigate();
-
-// après l’ajout d’un modèle
-navigate(`/models/${created.id}`);
-
-// après la connexion, sans garder
-// /login dans l’historique
-navigate('/', { replace: true });
-```
-
-</div>
-<div>
-
-**Pendant le rendu**&nbsp;: `<Navigate />`
-
-```tsx
-if (!token) {
-  return <Navigate to="/login" replace />;
-}
-```
-
-<div class="pt-4 text-sm">
-
-Un `Link` attend un clic. `navigate()` s’appelle dans un gestionnaire d’événement. `<Navigate />` s’affiche, et redirige aussitôt.
-
-</div>
-
-<div class="pt-4 text-sm op-75">
-<code>replace</code>&nbsp;: la nouvelle adresse remplace l’ancienne dans l’historique. Le bouton retour ne ramène pas sur la page de connexion.
-</div>
-</div>
-</div>
-
----
-layout: section
----
-
-# 5. La connexion
+# 4. La connexion
 
 ---
 
@@ -785,10 +653,6 @@ Par défaut, `fetch` fait un `GET`. Pour un `POST`, trois choses&nbsp;:
 
 <div class="pt-4 op-75">
 Les comptes de la base&nbsp;: <code>alice</code>, administratrice, et <code>bob</code>, simple utilisateur. Mot de passe <code>secret</code> pour les deux.
-</div>
-
-<div class="mt-3 p-3 bg-red-500 bg-opacity-10 rounded">
-<b>Deux <code>login</code>.</b> Celui d’<code>api.ts</code> demande le token&nbsp;; celui du contexte le range. Dans <code>AuthProvider</code>&nbsp;: <code>import * as api</code>, puis <code>api.login(…)</code>. Sinon, <code>login</code> s’appelle lui-même.
 </div>
 </div>
 </div>
@@ -879,7 +743,7 @@ const { user, logout } = useAuth();
 
 <div class="text-sm">
 
-**Le token vit à deux endroits.** Dans un état, pour que React redessine&nbsp;; dans `localStorage`, pour survivre au rechargement. `login` fait donc `localStorage.setItem`, **puis** `setToken`. Et `user` se calcule à chaque rendu&nbsp;: `decodePayload(token)`.
+`user` se calcule à chaque rendu, à partir du token&nbsp;: `decodePayload(token)`, ou `null`.
 
 </div>
 
@@ -904,6 +768,85 @@ C’est ce que font déjà `QueryClientProvider` et `BrowserRouter`&nbsp;: un pr
 <div class="pt-4 op-75">
 <code>AuthProvider.tsx</code> est fourni en squelette&nbsp;: vous écrivez <code>login</code>, <code>logout</code> et <code>user</code>, étape 2. Il utilise la syntaxe de React 19, <code>&lt;AuthContext value={…}&gt;</code>&nbsp;; les tutos écrivent encore <code>&lt;AuthContext.Provider&gt;</code>.
 </div>
+</div>
+</div>
+
+---
+
+# Deux fonctions `login`
+
+<div class="grid grid-cols-5 gap-6 pt-2">
+<div class="col-span-3">
+
+```ts
+// api.ts : parle à l’API
+export async function login(username: string, password: string) {
+  // … POST /auth/login
+  return body.access_token;           // renvoie le token
+}
+```
+
+```tsx
+// AuthProvider.tsx : garde l’utilisateur connecté
+import * as api from '../api';
+
+const login = async (username: string, password: string) => {
+  const token = await api.login(username, password);
+  // … puis le range, étape 2
+};
+```
+
+</div>
+<div class="col-span-2 text-sm">
+
+- **`api.login`** demande le token à l’API, et le **renvoie**. Il ne garde rien.
+- **Le `login` du contexte** appelle `api.login`, puis **range** le token. C’est lui que les pages appellent, avec `useAuth()`.
+
+<div class="mt-4 p-3 bg-red-500 bg-opacity-10 rounded">
+
+**Le piège.** Sans le préfixe `api.`, le `login` du contexte s’appelle lui-même, à l’infini&nbsp;: *Maximum call stack size exceeded*.
+
+</div>
+</div>
+</div>
+
+---
+
+# Le token, entre l’état et `localStorage`
+
+<div class="grid grid-cols-5 gap-6 pt-2">
+<div class="col-span-3">
+
+```ts
+// le navigateur range des chaînes, par clé
+localStorage.setItem(TOKEN_KEY, token);   // ranger
+localStorage.getItem(TOKEN_KEY);          // lire : string | null
+localStorage.removeItem(TOKEN_KEY);       // oublier
+```
+
+```tsx
+// AuthProvider : l’état part de localStorage
+const [token, setToken] = useState(
+  () => localStorage.getItem(TOKEN_KEY),
+);
+```
+
+<div class="pt-2 text-sm op-75">
+<code>TOKEN_KEY</code>, fourni dans <code>AuthProvider.tsx</code>, vaut <code>'token'</code>&nbsp;: le nom de la case. Pour la voir&nbsp;: F12, Application, Local Storage, <code>http://localhost:5173</code>. Une origine, un stockage.
+</div>
+
+</div>
+<div class="col-span-2 text-sm">
+
+<v-clicks>
+
+- **Deux endroits, deux rôles.** L’état&nbsp;: React redessine quand il change. `localStorage`&nbsp;: le token survit au rechargement.
+- `login` le range **dans les deux**, `logout` l’efface **des deux**. Changer seulement `localStorage` ne redessine rien.
+- `useState(() => …)`&nbsp;: une fonction, appelée une seule fois, au montage. Sans elle, la lecture se referait à chaque rendu.
+- Le squelette écrit `const [token] = useState(…)`&nbsp;: à vous d’ajouter `setToken`.
+
+</v-clicks>
+
 </div>
 </div>
 
@@ -948,6 +891,49 @@ Le même en-tête que dans Swagger ou Bruno, en séance 4&nbsp;: **`Authorizatio
 
 ---
 
+# Naviguer depuis le code
+
+<div class="grid grid-cols-2 gap-8 pt-2">
+<div>
+
+**Après une action**&nbsp;: `useNavigate`
+
+```tsx
+const navigate = useNavigate();
+
+// après l’ajout d’un modèle
+navigate(`/models/${created.id}`);
+
+// après la connexion, sans garder
+// /login dans l’historique
+navigate('/', { replace: true });
+```
+
+</div>
+<div>
+
+**Pendant le rendu**&nbsp;: `<Navigate />`
+
+```tsx
+if (!token) {
+  return <Navigate to="/login" replace />;
+}
+```
+
+<div class="pt-4 text-sm">
+
+Un `Link` attend un clic. `navigate()` s’appelle dans un gestionnaire d’événement. `<Navigate />` s’affiche, et redirige aussitôt.
+
+</div>
+
+<div class="pt-4 text-sm op-75">
+<code>replace</code>&nbsp;: la nouvelle adresse remplace l’ancienne dans l’historique. Le bouton retour ne ramène pas sur la page de connexion.
+</div>
+</div>
+</div>
+
+---
+
 # La page protégée
 
 <div class="grid grid-cols-2 gap-8 pt-2">
@@ -966,6 +952,12 @@ Le même en-tête que dans Swagger ou Bruno, en séance 4&nbsp;: **`Authorizatio
    le formulaire
 ```
 
+<div class="pt-3 text-sm">
+
+**`children`**&nbsp;: ce qu’on écrit entre `<RequireAuth>` et `</RequireAuth>`, ici `<NewModelPage />`. `RequireAuth` décide s’il l’affiche.
+
+</div>
+
 </div>
 <div class="text-sm">
 
@@ -980,7 +972,7 @@ Le même en-tête que dans Swagger ou Bruno, en séance 4&nbsp;: **`Authorizatio
 <v-clicks>
 
 - Pas de token&nbsp;: `<Navigate />` vers `/login`, avec la page demandée dans `state`. `useLocation()` donne l’adresse actuelle.
-- Après la connexion, `LoginPage` lit `location.state` et y retourne.
+- Après la connexion, `LoginPage` lit `location.state?.from` et y retourne. `?.`&nbsp;: lire `from` seulement si `state` existe.
 
 </v-clicks>
 
@@ -993,6 +985,137 @@ Le même en-tête que dans Swagger ou Bruno, en séance 4&nbsp;: **`Authorizatio
 </div>
 
 </v-click>
+</div>
+</div>
+
+---
+layout: section
+---
+
+# 5. Les formulaires
+
+---
+
+# Le formulaire contrôlé
+
+<div class="grid grid-cols-5 gap-6 pt-2">
+<div class="col-span-3">
+
+```tsx
+const [username, setUsername] = useState('');
+
+<input
+  id="username"
+  value={username}
+  onChange={(e) => setUsername(e.target.value)}
+/>
+```
+
+<BrowserFrame url="localhost:5173/login">
+<label for="demo-username" style="display: block; font-size: 14px;">Identifiant</label>
+<input id="demo-username" value="alice" readonly style="margin-top: 4px; padding: 2px 6px; border: 1px solid #767676; border-radius: 3px; background: #fff; color: #000;" />
+</BrowserFrame>
+
+</div>
+<div class="col-span-2 text-sm">
+
+<v-clicks>
+
+- **La valeur du champ vient de l’état**, pas du navigateur. L’état React est la seule source de vérité.
+- Chaque touche&nbsp;: `onChange`, puis `setUsername`, puis un rendu, et le champ affiche la nouvelle valeur.
+- `value` sans `onChange`&nbsp;: le champ est figé, on ne peut plus rien taper. React le signale dans la console.
+- Un `<input type="number">` donne **une chaîne**&nbsp;: `Number(parameters)` avant de l’envoyer.
+
+</v-clicks>
+
+</div>
+</div>
+
+---
+
+# Envoyer le formulaire
+
+<div class="grid grid-cols-5 gap-6 pt-2">
+<div class="col-span-3">
+
+```tsx
+import { type SubmitEvent } from 'react';
+
+const { login } = useAuth();    // celui du contexte
+const navigate = useNavigate();
+
+const handleSubmit = async (
+  event: SubmitEvent<HTMLFormElement>,
+) => {
+  event.preventDefault();       // pas de rechargement
+  try {
+    await login(username, password);
+    navigate('/', { replace: true });
+  } catch (err) {
+    setError(…);   // le 401 : « Les erreurs de l’API »
+  }
+};
+
+<form onSubmit={handleSubmit}>
+  {/* les champs */}
+  <button type="submit">Se connecter</button>
+</form>
+```
+
+</div>
+<div class="col-span-2 text-sm">
+
+<v-clicks>
+
+- **`onSubmit` sur le `<form>`**, pas `onClick` sur le bouton&nbsp;: la touche Entrée dans un champ envoie aussi le formulaire.
+- **`preventDefault()`**&nbsp;: sans lui, le navigateur fait ce qu’un formulaire HTML fait depuis 1995. Il met les champs dans l’adresse, mot de passe compris, et **recharge la page**.
+- `async`&nbsp;: on attend la réponse de l’API avant de changer de page.
+- `SubmitEvent`, importé de `react`. Les tutos écrivent encore `FormEvent`, marqué obsolète dans les types de React 19.
+
+</v-clicks>
+
+</div>
+</div>
+
+---
+
+# Un formulaire à plusieurs champs
+
+<div class="grid grid-cols-5 gap-6 pt-2">
+<div class="col-span-3">
+
+```tsx
+interface Draft {
+  name: string;
+  task: Task;
+  parameters: string;   // un input donne une chaîne
+  // …
+}
+const [draft, setDraft] = useState<Draft>(EMPTY_DRAFT);
+
+<input
+  value={draft.name}
+  onChange={(e) => setDraft({ ...draft, name: e.target.value })}
+/>
+<select
+  value={draft.task}
+  onChange={(e) =>
+    setDraft({ ...draft, task: e.target.value as Task })}
+>
+```
+
+</div>
+<div class="col-span-2 text-sm">
+
+<v-clicks>
+
+- **Un objet, un seul état**, plutôt qu’un `useState` par champ.
+- `{ ...draft, name: … }`&nbsp;: une copie, avec un champ changé. Écrire `draft.name = …` modifie l’objet, mais React ne voit rien&nbsp;: même objet, pas de nouveau rendu.
+- Un `<select>` se contrôle comme un `<input>`. `e.target.value` est une `string`&nbsp;: `as Task` la promet au compilateur.
+- Pendant l’envoi&nbsp;: un état `submitting`, `disabled={submitting}` sur le bouton, remis à `false` dans le `finally`, que l’envoi réussisse ou non.
+
+</v-clicks>
+
 </div>
 </div>
 
@@ -1039,6 +1162,18 @@ Pendant l’envoi, le bouton est désactivé. Un double clic, sinon, c’est deu
 <div class="grid grid-cols-3 gap-4 pt-2 text-sm">
 <div class="p-4 border border-gray-500 border-opacity-30 rounded">
 
+**La connexion**
+
+- `api.login` demande le token, le `login` du contexte le range
+- le token dans l’état **et** dans `localStorage`
+- le payload se lit, il ne prouve rien
+- `useAuth()` partout, grâce au contexte
+- `Authorization: Bearer`, et un `401` déconnecte
+- le front cache, l’API interdit
+
+</div>
+<div class="p-4 border border-gray-500 border-opacity-30 rounded">
+
 **Naviguer**
 
 - `Link` pour un lien
@@ -1054,19 +1189,9 @@ Pendant l’envoi, le bouton est désactivé. Un double clic, sinon, c’est deu
 
 - `value` et `onChange`&nbsp;: l’état décide
 - `onSubmit` sur le `<form>`, et `preventDefault()`
+- plusieurs champs&nbsp;: un objet, copié avec `{ ...draft }`
 - `method`, `Content-Type`, `JSON.stringify`
 - les erreurs de l’API, dans un `role="alert"`
-
-</div>
-<div class="p-4 border border-gray-500 border-opacity-30 rounded">
-
-**La connexion**
-
-- le token dans `localStorage`, un choix assumé
-- le payload se lit, il ne prouve rien
-- `useAuth()` partout, grâce au contexte
-- `Authorization: Bearer`, et un `401` déconnecte
-- le front cache, l’API interdit
 
 </div>
 </div>
