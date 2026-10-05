@@ -1,6 +1,6 @@
 # Projet : une application pour un client
 
-*Développement Web, ISMIN 3A. En binôme. Le code et le rapport produit le dimanche 25 octobre, le rapport d'audit le samedi 31 octobre.*
+*Développement Web, ISMIN 3A. En binôme. Le code et le rapport produit le dimanche 25 octobre, le rapport d'audit le dimanche 8 novembre.*
 
 ## 🎯 La mission
 
@@ -31,7 +31,7 @@ Deux conséquences :
 | `GET /health` répond `200` | Je l'appelle, une fois l'application lancée |
 | Tests automatisés, côté API et côté front | `npm test` dans chaque dossier |
 
-Vous pouvez partir de zéro ou réutiliser le code des TPs. Docker se voit en séance 10 : d'ici là, lancez l'API et le front comme en TP.
+Vous pouvez partir de zéro ou réutiliser le code des TPs. Docker se voit en séance 11, le mardi 6 octobre : d'ici là, lancez l'API et le front comme en TP.
 
 ## 🗓 Les jalons
 
@@ -39,7 +39,7 @@ Vous pouvez partir de zéro ou réutiliser le code des TPs. Docker se voit en s�
 |---|---|---|
 | **Vendredi 9 octobre** | **Le cadrage** | Un commentaire dans le fil de votre sujet : ce que vous avez compris du besoin, les trois fonctionnalités, ce que vous laissez de côté, le lien du dépôt. Le client y réagit s'il n'est pas d'accord, comme à n'importe quelle question. |
 | **Dimanche 25 octobre, 23 h 59** | **Le code et le rapport produit** | Un tag `v1.0` sur `main`, qui démarre avec `docker compose up`, avec `RAPPORT.md` à la racine. C'est la version notée : les commits suivants ne comptent pas. Le lendemain, je vous envoie par mail le projet que vous auditez. |
-| **Samedi 31 octobre, 23 h 59** | **Le rapport d'audit** | Un fichier `AUDIT.md`, en pièce jointe d'un mail. |
+| **Dimanche 8 novembre, 23 h 59** | **Le rapport d'audit** | Un fichier `AUDIT.md`, en pièce jointe d'un mail. Le projet à auditer arrive le 26 octobre : rien ne vous empêche de le faire avant les vacances. |
 
 **Tout passe par GitHub, sauf l'audit** : les questions et le cadrage dans les Discussions du cours, le code et le rapport produit dans votre dépôt. L'audit, lui, est confidentiel : l'attribution et le rendu se font par mail.
 

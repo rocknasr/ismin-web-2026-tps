@@ -205,14 +205,18 @@ npm run dev      # → http://localhost:5173
 <div>
 
 ```tsx
-// src/main.tsx : le seul endroit où React
-// touche la page lui-même
+// src/main.tsx : le seul endroit où vous touchez
+// au DOM. Vous confiez la <div id="root"> à React
 createRoot(document.getElementById('root')!)
   .render(<App />);
 ```
 
 <div class="pt-4 text-sm op-75">
 Le reste du temps, vous ne touchez plus au DOM&nbsp;: vous décrivez l’écran, React s’occupe du DOM.
+</div>
+
+<div class="pt-2 text-sm op-75">
+Le <code>!</code>&nbsp;: <code>getElementById</code> peut renvoyer <code>null</code>. Le <code>!</code> dit à TypeScript «&nbsp;cet élément existe, je le sais&nbsp;».
 </div>
 </div>
 </div>
@@ -276,6 +280,12 @@ const [first, second] = ['a', 'b'];
 
 // Une fonction fléchée
 const double = (x: number) => x * 2;
+
+// Une chaîne avec des valeurs : des backquotes
+const url = `${API_URL}/models?task=${task}`;
+
+// Une valeur par défaut, si null ou undefined
+const license = model.license ?? 'Non précisée';
 ```
 
 </div>
@@ -284,6 +294,9 @@ const double = (x: number) => x * 2;
 ```ts
 // Transformer chaque élément
 const names = models.map((m) => m.name);
+
+// Garder certains éléments
+const big = models.filter((m) => m.parameters > 10);
 
 // Choisir entre deux valeurs
 const label = count > 1 ? 'modèles' : 'modèle';
@@ -401,14 +414,14 @@ interface ModelCardProps {
   model: Model;
 }
 
-function ModelCard({ model }: ModelCardProps) {
+const ModelCard = ({ model }: ModelCardProps) => {
   return (
     <article className="card">
       <h2>{model.name}</h2>
       <p>{model.org}</p>
     </article>
   );
-}
+};
 ```
 
 ```tsx
@@ -465,7 +478,7 @@ const ModelCard = ({ model }: ModelCardProps) => (
 </div>
 </div>
 
-<div class="grid grid-cols-2 gap-6 pt-4 text-sm">
+<div class="grid grid-cols-2 gap-6 pt-3 text-sm">
 <div>
 
 - Des **parenthèses** après la flèche&nbsp;: le JSX est renvoyé directement, sans `return`.
@@ -473,17 +486,15 @@ const ModelCard = ({ model }: ModelCardProps) => (
 - Pour React, les deux sont identiques. **Dans le TP&nbsp;: des fonctions fléchées.**
 
 </div>
-<div class="p-4 bg-blue-500 bg-opacity-10 rounded">
+<div class="p-3 bg-blue-500 bg-opacity-10 rounded">
 
 **Exporter, importer**
 
 ```tsx
-// un export nommé
-export const ModelCard = …
+export const ModelCard = …   // un export nommé
 import { ModelCard } from './ModelCard';
 
-// l’export par défaut
-export default App;
+export default App;          // l’export par défaut
 import App from './App';
 ```
 
@@ -595,6 +606,14 @@ const Counter = () => {
 - Pourquoi pas un simple `let count = 0`&nbsp;? `Counter` est rappelée à chaque rendu&nbsp;: la variable repartirait de zéro, et React ne saurait pas qu’il faut redessiner.
 
 </v-clicks>
+
+<v-click>
+
+<div class="pt-3 op-75">
+Piège&nbsp;: <code>setCount</code> ne change pas <code>count</code> tout de suite. Juste après, <code>console.log(count)</code> affiche encore l’ancienne valeur&nbsp;: la nouvelle arrive au rendu suivant.
+</div>
+
+</v-click>
 
 </div>
 </div>
@@ -747,7 +766,7 @@ Chaque requête&nbsp;: l’URL, le code HTTP, la réponse.
 
 **React DevTools**, une extension
 
-L’arbre de vos composants, avec leurs props et leur état, en direct.
+L’arbre de vos composants, avec leurs props et leur état, en direct. «&nbsp;React Developer Tools&nbsp;», sur le Chrome Web Store ou Firefox Add-ons.
 
 <div class="pt-2 op-75">Pour vérifier ce que <code>App</code> a vraiment dans son état.</div>
 
@@ -778,6 +797,7 @@ async function fetchOrganisations() {
 
 <div class="pt-2 text-xs op-75">
 <code>await</code> attend la promesse&nbsp;: c’est un <code>.then</code> écrit autrement. Une fonction <code>async</code> renvoie toujours une promesse.
+<br/><code>API_URL</code> est fourni dans <code>api.ts</code>&nbsp;: <code>import.meta.env.VITE_API_URL</code>, lu dans <code>.env</code>. Seules les variables qui commencent par <code>VITE_</code> arrivent jusqu’au navigateur.
 </div>
 
 <div class="pt-3 text-sm">
@@ -893,10 +913,12 @@ Le code d’un effet s’exécute **après** le rendu, pas pendant.
 
 # `useEffect`&nbsp;: trois choses à savoir
 
-<div class="grid grid-cols-3 gap-4 pt-2 text-sm">
-<div>
+<div class="grid grid-cols-7 gap-4 pt-2 text-sm">
+<div class="col-span-3">
 
 **1. L’effet n’est pas `async`**
+
+<div class="text-xs op-75 pb-1">Une fonction <code>async</code> renvoie une promesse. React attend rien, ou une fonction de nettoyage.</div>
 
 ```tsx
 // ❌ refusé
@@ -907,10 +929,17 @@ useEffect(() => {
   fetchModels(task)
     .then((d) => setModels(d));
 }, [task]);
+
+// ✅ ou await, dans une fonction
+useEffect(() => {
+  const load = async () =>
+    setModels(await fetchModels(task));
+  load();
+}, [task]);
 ```
 
 </div>
-<div>
+<div class="col-span-2">
 
 **2. Le nettoyage**
 
@@ -926,7 +955,7 @@ useEffect(() => {
 ```
 
 </div>
-<div>
+<div class="col-span-2">
 
 **3. Deux fois, en développement**
 
@@ -964,12 +993,26 @@ return (
 );
 ```
 
+<div class="text-xs">
+
+| Dans l’effet | On appelle |
+|---|---|
+| au début | `setStatus('loading')` |
+| dans le `.then` | `setModels(data)`, puis `setStatus('ready')` |
+| dans le `.catch` | `setError(…)`, puis `setStatus('error')` |
+
+</div>
+
 </div>
 <div class="col-span-2 text-sm">
 
 Un appel réseau n’a pas un résultat, il en a **trois**. Chacun a son rendu.
 
 Un seul état, `status`, plutôt que trois booléens&nbsp;: impossible d’être à la fois «&nbsp;en chargement&nbsp;» et «&nbsp;en erreur&nbsp;».
+
+<div class="pt-4">
+<code>.catch</code>, le pendant du <code>.then</code>&nbsp;: la fonction appelée quand la promesse échoue. Le réseau coupé, ou l’erreur levée sur <code>!res.ok</code>.
+</div>
 
 <div class="pt-4 op-75">
 Les rôles <code>status</code> et <code>alert</code> servent aux lecteurs d’écran. Et aux tests, qui les cherchent.
@@ -1029,11 +1072,16 @@ curl, Bruno et <code>/docs</code> ne sont pas des pages web&nbsp;: le CORS ne le
 ```ts
 // api/src/main.ts
 app.enableCors({
-  origin: process.env.WEB_ORIGIN,
+  origin: process.env.WEB_ORIGIN
+    ?? 'http://localhost:5173',
 });
 ```
 
 `WEB_ORIGIN` vient de `.env`&nbsp;: `localhost:5173` aujourd’hui, l’URL de production demain.
+
+<div class="pt-2 text-sm op-75">
+Le <code>??</code> n’est pas décoratif&nbsp;: sans lui, une variable oubliée donne <code>undefined</code>, et <code>cors</code> autorise alors tout le monde, sans rien dire.
+</div>
 
 </div>
 
@@ -1059,8 +1107,8 @@ C’était le constat «&nbsp;grave, aujourd’hui&nbsp;» de l’audit de la s�
 
 # L’essentiel, sur une slide
 
-<div class="grid grid-cols-3 gap-4 pt-2 text-sm">
-<div class="p-4 border border-gray-500 border-opacity-30 rounded">
+<div class="grid grid-cols-4 gap-3 pt-2 text-sm">
+<div class="p-3 border border-gray-500 border-opacity-30 rounded">
 
 **Le JSX**
 
@@ -1071,24 +1119,33 @@ C’était le constat «&nbsp;grave, aujourd’hui&nbsp;» de l’audit de la s�
 - `map` et une `key` pour les listes
 
 </div>
-<div class="p-4 border border-gray-500 border-opacity-30 rounded">
+<div class="p-3 border border-gray-500 border-opacity-30 rounded">
 
 **Les composants**
 
-- une fonction, avec une majuscule
+- une fonction, une majuscule
 - les props, un seul objet, déstructuré
 - l’état vit dans le parent commun
-- il descend par les props, les choix remontent par une fonction
+- il descend par les props, les choix remontent
 
 </div>
-<div class="p-4 border border-gray-500 border-opacity-30 rounded">
+<div class="p-3 border border-gray-500 border-opacity-30 rounded">
 
 **Les hooks**
 
-- `useState`&nbsp;: la mémoire, `set…` redessine
-- `useEffect`&nbsp;: après le rendu, avec ses dépendances
+- `useState`&nbsp;: `set…` redessine
+- la nouvelle valeur arrive au rendu suivant
 - en haut du composant, jamais dans un `if`
-- un appel réseau&nbsp;: trois états
+
+</div>
+<div class="p-3 border border-gray-500 border-opacity-30 rounded">
+
+**Le réseau**
+
+- `fetch`&nbsp;: lire `res.ok`
+- `useEffect`, et ses dépendances
+- trois états&nbsp;: chargement, erreur, données
+- le CORS se règle côté serveur
 
 </div>
 </div>
@@ -1237,9 +1294,9 @@ useEffect(() => {
       setModels(data);
       setStatus('ready');
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       if (ignore) return;
-      setError(err.message);
+      setError(err instanceof Error ? err.message : String(err));
       setStatus('error');
     });
   return () => { ignore = true; };  // le nettoyage
@@ -1256,6 +1313,10 @@ Vous cliquez sur «&nbsp;Traduction&nbsp;» puis tout de suite sur «&nbsp;Gén�
 <div class="pt-4 op-75">
 Avec <code>AbortController</code>, on va plus loin&nbsp;: la requête périmée est annulée, pas seulement ignorée.
 </div>
+
+<div class="pt-3 op-75">
+<code>err: unknown</code>&nbsp;: rien ne garantit qu’on a reçu une <code>Error</code>. On vérifie avec <code>instanceof</code> avant de lire <code>message</code>.
+</div>
 </div>
 </div>
 
@@ -1263,33 +1324,47 @@ Avec <code>AbortController</code>, on va plus loin&nbsp;: la requête périmée 
 
 # Les erreurs les plus vues
 
-<div class="grid grid-cols-2 gap-6 pt-2 text-sm">
-<div class="p-4 border border-gray-500 border-opacity-30 rounded">
+<div class="grid grid-cols-3 gap-4 pt-2 text-sm">
+<div class="p-3 border border-gray-500 border-opacity-30 rounded">
 
 **La boucle infinie**
 
 `fetch` dans le corps du composant, un `useEffect` sans tableau de dépendances, ou `onClick={f()}` au lieu de `onClick={() => f()}`.
 
 </div>
-<div class="p-4 border border-gray-500 border-opacity-30 rounded">
+<div class="p-3 border border-gray-500 border-opacity-30 rounded">
 
 **La `key` oubliée**, ou l’index à sa place
 
 Un avertissement rouge dans la console, et des éléments mélangés quand la liste change.
 
 </div>
-<div class="p-4 border border-gray-500 border-opacity-30 rounded">
+<div class="p-3 border border-gray-500 border-opacity-30 rounded">
 
 **`res.ok` oublié**
 
 Un 500 de l’API passe pour une réussite, et `models.map` plante sur un objet d’erreur.
 
 </div>
-<div class="p-4 border border-gray-500 border-opacity-30 rounded">
+<div class="p-3 border border-gray-500 border-opacity-30 rounded">
 
 **`origin: '*'`**
 
-Ça marche, et ça marche pour tout le monde. Une origine explicite, lue dans `.env`.
+Ça marche, et ça marche pour tout le monde. Une origine explicite, lue dans `.env`, avec une valeur de repli.
+
+</div>
+<div class="p-3 border border-gray-500 border-opacity-30 rounded">
+
+**`.env` modifié, rien ne change**
+
+Vite et l’API lisent `.env` au démarrage. Relancez `npm run dev`, ou `npm run start:dev`.
+
+</div>
+<div class="p-3 border border-gray-500 border-opacity-30 rounded">
+
+**`console.log` juste après `set…`**
+
+Il affiche l’ancienne valeur&nbsp;: la nouvelle arrive au rendu suivant. Regardez plutôt les React DevTools.
 
 </div>
 </div>
@@ -1332,7 +1407,12 @@ TanStack Query est la bibliothèque de requêtes la plus utilisée avec React. E
 **Une fois&nbsp;: le client**, dans `main.tsx`
 
 ```tsx
-const queryClient = new QueryClient();
+import { QueryClient, QueryClientProvider }
+  from '@tanstack/react-query';
+
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: 1 } },
+});
 
 <QueryClientProvider client={queryClient}>
   <App />
@@ -1340,7 +1420,7 @@ const queryClient = new QueryClient();
 ```
 
 <div class="pt-2 text-sm op-75">
-Le client garde le cache de toute l’application.
+Le client garde le cache de toute l’application. <code>retry: 1</code>&nbsp;: par défaut, une requête qui échoue est retentée trois fois, et l’erreur met plusieurs secondes à s’afficher.
 </div>
 
 </div>
@@ -1349,6 +1429,8 @@ Le client garde le cache de toute l’application.
 **Dans `App`&nbsp;: la requête**
 
 ```tsx
+import { useQuery } from '@tanstack/react-query';
+
 const { data, error, isPending, isError } =
   useQuery({
     queryKey: ['models', task],
@@ -1361,6 +1443,36 @@ const { data, error, isPending, isError } =
 - `queryFn`&nbsp;: la même `fetchModels` que dans le TP.
 - `queryKey`&nbsp;: le rôle du tableau de dépendances. Une nouvelle tâche, une nouvelle requête, et une case de plus dans le cache.
 
+</div>
+</div>
+</div>
+
+---
+
+# Les trois états, avec `useQuery`
+
+<div class="grid grid-cols-5 gap-6 pt-2">
+<div class="col-span-3">
+
+```tsx
+return (
+  <main>
+    {isPending && <p role="status">Chargement…</p>}
+    {isError && <p role="alert">{error.message}</p>}
+    {data && <ModelList models={data} />}
+  </main>
+);
+```
+
+</div>
+<div class="col-span-2 text-sm">
+
+- `isPending`, `isError` et `data` remplacent `status`, `error` et `models`.
+- **`data` vaut `undefined`** tant que la réponse n’est pas arrivée. `<ModelList models={data} />` seul ne compile pas&nbsp;: `{data && …}`.
+- `error` est une `Error`&nbsp;: `error.message` se lit directement.
+
+<div class="pt-4 op-75">
+<code>fetchModels</code> ne change pas&nbsp;: c’est toujours elle qui lève l’erreur sur <code>!res.ok</code>.
 </div>
 </div>
 </div>
@@ -1389,11 +1501,11 @@ layout: center
 
 # Demain
 
-## Séance 8&nbsp;: routage, connexion et formulaires
+## Séance 8&nbsp;: le routage
 
 <div class="pt-6 op-75">
-Votre catalogue n’a qu’une page, et tout le monde peut la lire.<br/>
-Demain, il en aura plusieurs, et certaines demanderont de se connecter.
+Votre catalogue n’a qu’une page.<br/>
+Demain, chaque modèle aura la sienne, avec son adresse.
 </div>
 
 <div class="pt-10 text-sm op-60">

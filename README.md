@@ -40,12 +40,12 @@ Chaque TP est un projet autonome : `cd tpNN && npm install`.
 | 6 | L'audit d'une vraie API | [`tp05/`](./tp05) |
 | **Sprint 3 : Fusion & QA** | | |
 | 7 | React, du composant à l'API | [`tp07/`](./tp07) |
-| 8 | Routage client | `tp08/` |
-| 9 | Tests automatisés | `tp09/` |
-| **Sprint 4 : DevOps & production** | | |
-| 10 | Docker | `tp10/` |
-| 11 | CI/CD avec GitHub Actions | `tp11/` |
-| 12 | Déploiement cloud | `tp12/` |
+| 8 | React, la suite : le réseau et le CORS | [`tp07/`](./tp07) |
+| 9 | Annulée : finir le TP7 chez soi, avancer le projet | |
+| **Sprint 4 : l'application complète** | | |
+| 10 | Le routage, la connexion et les formulaires | [`tp08/`](./tp08), `tp09/` |
+| 11 | Docker : l'application en une commande | `tp10/` |
+| 12 | Les tests : écrire les siens | `tp11/` |
 
 ## 🎓 Le projet
 
@@ -60,11 +60,11 @@ Chaque TP est un projet autonome : `cd tpNN && npm install`.
 |---|---|
 | **Vendredi 9 octobre** | Le cadrage, dans le fil de votre sujet |
 | **Dimanche 25 octobre, 23 h 59** | Le code et le rapport produit : un tag `v1.0` dans votre dépôt |
-| **Samedi 31 octobre, 23 h 59** | Le rapport d'audit, par mail |
+| **Dimanche 8 novembre, 23 h 59** | Le rapport d'audit, par mail |
 
 ## 🧵 Le fil rouge : ModelZoo
 
-Tous les TPs construisent la même application : **ModelZoo**, un catalogue de modèles d'IA : chercher, comparer, garder une shortlist. Vous commencez par une interface TypeScript en séance 1 et vous terminez avec une application full-stack déployée en production en séance 12.
+Tous les TPs construisent la même application : **ModelZoo**, un catalogue de modèles d'IA : chercher, comparer, garder une shortlist. Vous commencez par une interface TypeScript en séance 1 et vous terminez avec une application full-stack, qui démarre d'une seule commande avec Docker, et que vos propres tests protègent.
 
 Chaque TP démarre d'un état fonctionnel : si vous n'avez pas terminé le précédent, vous repartez d'une base saine et vous suivez quand même.
 
