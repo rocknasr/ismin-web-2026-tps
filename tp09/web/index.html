@@ -4,9 +4,142 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ModelZoo</title>
+    <!--
+      The loading page. Its CSS is inline, so it shows before the JavaScript
+      and styles.css have downloaded. The colours are the ones of styles.css.
+      src/pages/LoadingPage.tsx reuses these classes while the API is down.
+    -->
+    <style>
+      .splash {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 28px;
+        background: radial-gradient(circle at 50% 40%, #ffffff 0%, #f6f7f9 60%);
+        color: #1c2330;
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      }
+
+      /* Only the first one fades in: the one of React takes its place without a flicker. */
+      .splash-fade-in {
+        animation: splash-in 0.4s ease-out both;
+      }
+
+      /* The circle: a pale track, and over it a turning arc that fades into its tail. */
+      .splash-spinner {
+        position: relative;
+        width: 72px;
+        height: 72px;
+      }
+
+      .splash-spinner::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border: 6px solid #e8f0fd;
+        border-radius: 50%;
+      }
+
+      .splash-arc {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: conic-gradient(from 0deg, transparent 0 20%, #2f6fde 100%);
+        -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 5.5px));
+        mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 5.5px));
+        animation: splash-spin 0.9s linear infinite;
+      }
+
+      /* The rounded head of the arc. */
+      .splash-arc::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #2f6fde;
+        transform: translateX(-50%);
+      }
+
+      /* A small dot that breathes in the middle. */
+      .splash-spinner::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 14px;
+        height: 14px;
+        margin: -7px 0 0 -7px;
+        border-radius: 50%;
+        background: #2f6fde;
+        opacity: 0.85;
+        animation: splash-pulse 1.4s ease-in-out infinite;
+      }
+
+      .splash-title {
+        margin: 0;
+        font-size: 1.6rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+
+      .splash-text {
+        margin: -18px 0 0;
+        color: #5f6b7a;
+        font-size: 0.95rem;
+      }
+
+      @keyframes splash-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes splash-pulse {
+        0%,
+        100% {
+          transform: scale(0.6);
+          opacity: 0.5;
+        }
+        50% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @keyframes splash-in {
+        from {
+          opacity: 0;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .splash-arc {
+          animation-duration: 2.5s;
+        }
+        .splash-spinner::after {
+          animation: none;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- React replaces everything in #root when it starts: the loading page goes away by itself. -->
+      <div class="splash splash-fade-in" role="status" aria-live="polite">
+        <div class="splash-spinner" aria-hidden="true">
+          <div class="splash-arc"></div>
+        </div>
+        <p class="splash-title">ModelZoo</p>
+        <p class="splash-text">Chargement…</p>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
-import type { JwtPayload } from './jwt';
+import * as api from '../api';
+import { decodePayload, type JwtPayload } from './jwt';
 
 /** Where the token is kept: DevTools → Application → Local Storage, under this key. */
 export const TOKEN_KEY = 'token';
@@ -38,16 +39,19 @@ interface AuthProviderProps {
  * since this component has a `login` of its own.
  */
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [token] = useState(() => localStorage.getItem(TOKEN_KEY));
+  const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY));
 
-  const user: JwtPayload | null = null; // TODO step 2: decodePayload, when there is a token
+  const user: JwtPayload | null = token ? decodePayload(token) : null;
 
-  const login: Auth['login'] = async () => {
-    throw new Error('TODO step 2: login');
+  const login: Auth['login'] = async (username, password) => {
+    const newToken = await api.login(username, password);
+    localStorage.setItem(TOKEN_KEY, newToken);
+    setToken(newToken);
   };
 
   const logout: Auth['logout'] = () => {
-    throw new Error('TODO step 2: logout');
+    localStorage.removeItem(TOKEN_KEY);
+    setToken(null);
   };
 
   return <AuthContext value={{ token, user, login, logout }}>{children}</AuthContext>;

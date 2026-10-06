@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router';
 import App from './App';
 import { AuthProvider } from './auth/AuthProvider';
+import { ApiGate } from './components/ApiGate';
 import './styles.css';
 
 /** One client for the whole app: it holds the cache of every query. A failed request is retried once. */
@@ -18,13 +19,16 @@ const queryClient = new QueryClient({
  *   BrowserRouter         the current URL, from TP8
  *   QueryClientProvider   the cache of the requests, from TP7
  *   AuthProvider          the logged-in user, step 2
+ *   ApiGate               the loading page, as long as the API does not answer
  */
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <App />
+          <ApiGate>
+            <App />
+          </ApiGate>
         </AuthProvider>
       </QueryClientProvider>
     </BrowserRouter>

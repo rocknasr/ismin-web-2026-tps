@@ -1,0 +1,40 @@
+services:
+  # Ponctuel : applique les migrations puis le seed (des upsert, rejouable), et s'arrête
+  migrate:
+    build:
+      context: ./api
+      target: build
+    environment:
+      DATABASE_URL: file:/app/db/modelzoo.db
+    volumes:
+      - data:/app/db
+    command: sh -c "npx prisma migrate deploy && npm run db:seed"
+
+  api:
+    build: ./api
+    environment:
+      DATABASE_URL: file:/app/db/modelzoo.db
+      # Acceptable en développement ; en production, lu hors du dépôt avec env_file
+      JWT_SECRET: dev-secret-change-me-in-production
+      PORT: "3000"
+      WEB_ORIGIN: http://localhost:8080
+    ports:
+      - "3000:3000"
+    volumes:
+      - data:/app/db
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  web:
+    build:
+      context: ./web
+      args:
+        VITE_API_URL: http://localhost:3000
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+
+volumes:
+  data:

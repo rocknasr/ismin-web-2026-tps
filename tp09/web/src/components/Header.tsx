@@ -1,12 +1,14 @@
 import { Link } from 'react-router';
+import { useAuth } from '../auth/AuthProvider';
 
 /**
  * The top of every page: the title, back to the catalogue, and the links.
- *
- * TODO step 4: logged in, the username and a "Se déconnecter" button, in
- * place of the "Se connecter" link.
+ * Logged in, the username and a "Se déconnecter" button, in place of the
+ * "Se connecter" link.
  */
 export const Header = () => {
+  const { user, logout } = useAuth();
+
   return (
     <header className="app-header">
       <div>
@@ -18,7 +20,16 @@ export const Header = () => {
 
       <nav className="app-nav" aria-label="Navigation principale">
         <Link to="/models/new">Ajouter un modèle</Link>
-        <Link to="/login">Se connecter</Link>
+        {user ? (
+          <>
+            <span className="app-user">{user.username}</span>
+            <button className="link-button" type="button" onClick={logout}>
+              Se déconnecter
+            </button>
+          </>
+        ) : (
+          <Link to="/login">Se connecter</Link>
+        )}
       </nav>
     </header>
   );

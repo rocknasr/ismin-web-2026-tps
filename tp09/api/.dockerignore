@@ -1,0 +1,11 @@
+node_modules
+dist
+src/generated
+test
+.vscode
+.env
+.env.*
+!.env.example
+*.db
+*.db-journal
+*.tsbuildinfo
